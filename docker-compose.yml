@@ -1,0 +1,107 @@
+name: ${COMPOSE_PROJECT_NAME:-forme}
+
+x-wordpress-environment: &wordpress-environment
+  WORDPRESS_DB_HOST: db:3306
+  WORDPRESS_DB_NAME: ${DB_NAME:-wordpress}
+  WORDPRESS_DB_USER: ${DB_USER:-wordpress}
+  WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD in .env setzen}
+  SITE_URL: ${SITE_URL:?SITE_URL in .env setzen}
+  WORDPRESS_CONFIG_EXTRA: |
+    define('WP_HOME', getenv('SITE_URL'));
+    define('WP_SITEURL', getenv('SITE_URL'));
+    define('WP_MEMORY_LIMIT', '256M');
+    define('WP_MAX_MEMORY_LIMIT', '512M');
+    define('DISALLOW_FILE_EDIT', true);
+
+x-wordpress-volumes: &wordpress-volumes
+  - wordpress_data:/var/www/html
+  # Read-only Git-managed theme: git pull updates it even with an existing volume.
+  - ./wordpress/forme:/var/www/html/wp-content/themes/forme:ro
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${DB_NAME:-wordpress}
+      MARIADB_USER: ${DB_USER:-wordpress}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD in .env setzen}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD in .env setzen}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+    logging: *logging
+
+  wordpress:
+    image: forme-wordpress:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      # Local access / existing reverse proxy. Use the HTTPS override for a domain.
+      - "${HTTP_BIND:-127.0.0.1}:${HTTP_PORT:-8080}:80"
+    environment: *wordpress-environment
+    volumes: *wordpress-volumes
+    logging: *logging
+
+  setup:
+    image: forme-wordpress:local
+    pull_policy: never
+    restart: "no"
+    user: "33:33"
+    entrypoint: ["/usr/local/bin/forme-setup"]
+    depends_on:
+      wordpress:
+        condition: service_healthy
+    environment:
+      <<: *wordpress-environment
+      WP_ADMIN_USER: ${WP_ADMIN_USER:-forme-admin}
+      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD:?WP_ADMIN_PASSWORD in .env setzen}
+      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL:?WP_ADMIN_EMAIL in .env setzen}
+      WP_TITLE: ${WP_TITLE:-FORME}
+      HOME: /tmp
+      WP_CLI_CACHE_DIR: /tmp/wp-cli-cache
+    volumes: *wordpress-volumes
+    # This is a one-shot command, not an HTTP service.
+    healthcheck:
+      disable: true
+    logging: *logging
+
+  wpcli:
+    image: forme-wordpress:local
+    pull_policy: never
+    profiles: ["tools"]
+    user: "33:33"
+    entrypoint: ["wp", "--path=/var/www/html"]
+    command: ["--info"]
+    depends_on:
+      wordpress:
+        condition: service_healthy
+      setup:
+        condition: service_completed_successfully
+    environment:
+      <<: *wordpress-environment
+      HOME: /tmp
+      WP_CLI_CACHE_DIR: /tmp/wp-cli-cache
+    volumes: *wordpress-volumes
+    healthcheck:
+      disable: true
+
+volumes:
+  db_data:
+  wordpress_data:

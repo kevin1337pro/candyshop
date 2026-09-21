@@ -1,0 +1,9 @@
+# Allowlist: no .env, Git history, database dumps or development dependencies.
+**
+!Dockerfile
+!wordpress/
+!wordpress/forme/
+!wordpress/forme/**
+!docker/
+!docker/setup-wordpress.sh
+!docker/wordpress.ini

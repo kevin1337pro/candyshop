@@ -11,6 +11,19 @@ Zwei zusammengehörige Ergebnisse:
 
 Das ZIP liegt unter `public/downloads/forme-woocommerce-theme.zip`; die deutschsprachige Einrichtung unter `public/downloads/forme-einrichtung.html`. Originale Bildprompts und Dateipfade: `docs/ASSETS.md`.
 
+## Serverbetrieb mit Docker
+
+Für den nativen WordPress-/WooCommerce-Shop gibt es jetzt ein `Dockerfile`, `docker-compose.yml` und ein optionales HTTPS-Setup. Datenbank, Uploads und Shop-Einstellungen bleiben in Docker-Volumes erhalten. **[Vollständige Server-Anleitung für die Übergabe](docker/README.md)**.
+
+```sh
+sh docker/create-env.sh
+# .env öffnen: WP_ADMIN_EMAIL sowie die gewünschte SITE_URL setzen.
+docker compose up -d --build
+docker compose logs -f setup
+```
+
+Das Standardsetup ist über `http://localhost:8080` erreichbar. Für eine öffentliche Domain mit HTTPS die Angaben in `docker/README.md` übernehmen.
+
 ## Lokale Entwicklung
 
 Node.js >=22.13, `npm install`, `npm run dev`, `npm run build`. In dieser Arbeitsumgebung wurde der bereitgestellte Node-24-Runtime direkt verwendet. Die Vorschau läuft über Vinext und den Sites-Worker. Keine Runtime-Geheimnisse nötig.

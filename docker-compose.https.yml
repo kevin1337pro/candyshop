@@ -1,0 +1,37 @@
+# Usage: docker compose -f docker-compose.yml -f docker-compose.https.yml up -d --build
+services:
+  wordpress:
+    environment:
+      SITE_URL: https://${SHOP_DOMAIN:?SHOP_DOMAIN in .env setzen}
+  setup:
+    environment:
+      SITE_URL: https://${SHOP_DOMAIN:?SHOP_DOMAIN in .env setzen}
+  wpcli:
+    environment:
+      SITE_URL: https://${SHOP_DOMAIN:?SHOP_DOMAIN in .env setzen}
+  caddy:
+    image: caddy:2.11.4-alpine
+    restart: unless-stopped
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      SHOP_DOMAIN: ${SHOP_DOMAIN:?SHOP_DOMAIN in .env setzen, z.B. shop.example.de}
+      ACME_EMAIL: ${WP_ADMIN_EMAIL:?WP_ADMIN_EMAIL in .env setzen}
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  caddy_data:
+  caddy_config:

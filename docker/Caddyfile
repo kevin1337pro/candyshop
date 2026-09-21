@@ -1,0 +1,8 @@
+{
+    email {$ACME_EMAIL}
+}
+
+{$SHOP_DOMAIN} {
+    encode zstd gzip
+    reverse_proxy wordpress:80
+}
