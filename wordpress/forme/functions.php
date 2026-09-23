@@ -15,9 +15,10 @@ function forme_setup() {
 }
 add_action( 'after_setup_theme', 'forme_setup' );
 function forme_assets() {
- wp_enqueue_style( 'forme', get_stylesheet_uri(), array(), '1.0.0' );
- wp_enqueue_style( 'forme-store', get_template_directory_uri() . '/assets/store.css', array( 'forme' ), '1.0.0' );
- wp_enqueue_script( 'forme-store', get_template_directory_uri() . '/assets/store.js', array(), '1.0.0', true );
+ wp_enqueue_style( 'forme', get_stylesheet_uri(), array(), '2.0.0' );
+ wp_enqueue_style( 'forme-store', get_template_directory_uri() . '/assets/store.css', array( 'forme' ), '2.0.0' );
+ wp_enqueue_script( 'forme-store', get_template_directory_uri() . '/assets/store.js', array(), '2.0.0', true );
+ if ( class_exists( 'WC_AJAX' ) ) { wp_localize_script( 'forme-store', 'candyDelivery', array( 'url' => WC_AJAX::get_endpoint( 'candy_delivery' ), 'nonce' => wp_create_nonce( 'candy_delivery' ) ) ); }
 }
 add_action( 'wp_enqueue_scripts', 'forme_assets' );
 function forme_shop_url() { return function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' ); }
@@ -32,13 +33,11 @@ function forme_icon( $name, $size = 20 ) {
  return '<svg width="' . absint( $size ) . '" height="' . absint( $size ) . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">' . $path . '</svg>';
 }
 function forme_logo() {
- if ( has_custom_logo() ) { the_custom_logo(); } else { echo '<a class="wordmark" href="' . esc_url( home_url( '/' ) ) . '" aria-label="' . esc_attr( get_bloginfo( 'name' ) ) . '">FORME<span>ST.</span></a>'; }
+ if ( has_custom_logo() ) { the_custom_logo(); } else { echo '<a class="brand" href="' . esc_url( home_url( '/' ) ) . '" aria-label="Candy Corner – Startseite"><img src="' . esc_url( get_template_directory_uri() . '/assets/logo.png' ) . '" alt="Candy Corner" width="1536" height="1024"></a>'; }
 }
 function forme_fallback_menu() {
  echo '<ul class="nav-menu">';
- foreach ( array( '' => 'Alle Styles', 't-shirts' => 'T-Shirts', 'jacken' => 'Jacken', 'hosen' => 'Hosen', 'strick' => 'Strick' ) as $slug => $name ) {
-  echo '<li><a href="' . esc_url( $slug ? forme_category_url( $slug ) : forme_shop_url() ) . '">' . esc_html( $name ) . '</a></li>';
- }
+ foreach ( array( '' => 'Unser Sortiment', 'suessigkeiten' => 'Süßigkeiten', 'snacks' => 'Snacks', 'drinks' => 'Drinks' ) as $slug => $name ) { echo '<li><a href="' . esc_url( $slug ? forme_category_url( $slug ) : forme_shop_url() ) . '">' . esc_html( $name ) . '</a></li>'; }
  echo '</ul>';
 }
 function forme_content_wrapper_start() { echo '<main id="main" class="commerce-wrap section-wrap">'; }
@@ -56,8 +55,8 @@ function forme_cart_link() {
 }
 add_filter( 'woocommerce_add_to_cart_fragments', function( $fragments ) { $fragments['a.forme-cart-link'] = forme_cart_link(); return $fragments; } );
 add_filter( 'woocommerce_product_get_image', function( $image, $product, $size, $attr, $placeholder ) {
- $position = $product->get_meta( '_forme_demo_position' );
- if ( ! $position && $product->get_parent_id() ) { $parent = wc_get_product( $product->get_parent_id() ); $position = $parent ? $parent->get_meta( '_forme_demo_position' ) : ''; }
+ $position = $product->get_meta( '_candy_demo_position' );
+ if ( ! $position && $product->get_parent_id() ) { $parent = wc_get_product( $product->get_parent_id() ); $position = $parent ? $parent->get_meta( '_candy_demo_position' ) : ''; }
  $allowed = array( '0% 0%', '100% 0%', '0% 100%', '100% 100%' );
  if ( ! $product->get_image_id() && in_array( $position, $allowed, true ) ) {
   return '<div role="img" aria-label="' . esc_attr( $product->get_name() ) . ' – KI-Beispielbild" class="product-image" style="background-image:url(' . esc_url( get_template_directory_uri() . '/assets/products.png' ) . ');background-position:' . esc_attr( $position ) . '"></div>';
@@ -66,30 +65,31 @@ add_filter( 'woocommerce_product_get_image', function( $image, $product, $size, 
 }, 10, 5 );
 add_action( 'woocommerce_before_single_product_summary', function() {
  global $product;
- if ( $product && ! $product->get_image_id() && in_array( $product->get_meta( '_forme_demo_position' ), array( '0% 0%', '100% 0%', '0% 100%', '100% 100%' ), true ) ) {
+ if ( $product && ! $product->get_image_id() && in_array( $product->get_meta( '_candy_demo_position' ), array( '0% 0%', '100% 0%', '0% 100%', '100% 100%' ), true ) ) {
   remove_action( 'woocommerce_before_single_product_summary', 'woocommerce_show_product_images', 20 );
   echo '<div class="woocommerce-product-gallery forme-demo-gallery">' . $product->get_image() . '</div>'; // Safe WooCommerce-generated image markup.
  }
 }, 19 );
 function forme_customize_register( $customizer ) {
- $customizer->add_section( 'forme_home', array( 'title' => 'FORME Startseite', 'priority' => 30 ) );
+ $customizer->add_section( 'forme_home', array( 'title' => 'Candy Corner Startseite', 'priority' => 30 ) );
  $fields = array(
-  'announcement' => array( 'Ankündigung', 'THE AUTUMN EDIT — 2026' ),
-  'hero_eyebrow' => array( 'Kollektionstitel', 'NEW SEASON / VOL. 01' ),
-  'hero_title' => array( 'Hauptüberschrift', "DEIN STIL.\nDEIN ALLTAG.\nDEINE FORM." ),
-  'hero_copy' => array( 'Einleitung', "Klare Schnitte. Neue Perspektiven.\nEntdecke Essentials, die zu dir passen." ),
-  'hero_cta' => array( 'Button-Text', 'Kollektion entdecken' ),
-  'editorial_title' => array( 'Editorial-Überschrift', "Passt nicht nur.\nPasst zu dir." ),
-  'editorial_copy' => array( 'Editorial-Text', 'Für Tage ohne Dresscode. Für Pläne, die sich ändern. Für deinen ganz eigenen Rhythmus. Unsere Everyday Essentials machen es dir leicht, deinen Look immer wieder neu zu kombinieren.' ),
+  'announcement' => array( 'Ankündigung', 'DEIN CANDY-SPOT IN ESSEN' ),
+  'hero_eyebrow' => array( 'Kampagnenzeile', 'GOOD MOOD. GREAT CANDY.' ),
+  'hero_title' => array( 'Hauptüberschrift', "Dein Leben.\nEin bisschen süßer." ),
+  'hero_copy' => array( 'Einleitung', 'Süß, sauer, crunchy. Entdecke deinen nächsten Lieblingssnack – für die Couch, die Crew und einfach so.' ),
+  'hero_cta' => array( 'Button-Text', 'Entdecke deine Lieblinge' ),
+  'editorial_title' => array( 'Banner-Überschrift', "Couch. Crew.\nCandy Corner." ),
+  'editorial_copy' => array( 'Banner-Text', 'Lieblingsserie an. Lieblingssnacks dazu. Stell dir deinen ganz eigenen Sweet Mix zusammen.' ),
  );
  foreach ( $fields as $key => $field ) {
   $customizer->add_setting( 'forme_' . $key, array( 'default' => $field[1], 'sanitize_callback' => 'sanitize_textarea_field', 'transport' => 'refresh' ) );
   $customizer->add_control( 'forme_' . $key, array( 'label' => $field[0], 'section' => 'forme_home', 'type' => 'textarea' ) );
  }
- foreach ( array( 'hero_image' => 'Kampagnenbild', 'editorial_image' => 'Editorial-Bild' ) as $key => $label ) {
+ foreach ( array( 'hero_image' => 'Kampagnenbild' ) as $key => $label ) {
   $customizer->add_setting( 'forme_' . $key, array( 'sanitize_callback' => 'esc_url_raw' ) );
   $customizer->add_control( new WP_Customize_Image_Control( $customizer, 'forme_' . $key, array( 'label' => $label, 'section' => 'forme_home' ) ) );
  }
 }
 add_action( 'customize_register', 'forme_customize_register' );
+require get_template_directory() . '/inc-delivery.php';
 require get_template_directory() . '/inc-setup.php';

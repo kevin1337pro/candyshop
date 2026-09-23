@@ -73,7 +73,7 @@ services:
       WP_ADMIN_USER: ${WP_ADMIN_USER:-forme-admin}
       WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD:?WP_ADMIN_PASSWORD in .env setzen}
       WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL:?WP_ADMIN_EMAIL in .env setzen}
-      WP_TITLE: ${WP_TITLE:-FORME}
+      WP_TITLE: ${WP_TITLE:-Candy Corner}
       HOME: /tmp
       WP_CLI_CACHE_DIR: /tmp/wp-cli-cache
     volumes: *wordpress-volumes

@@ -1,6 +1,6 @@
-# FORME auf einem Server mit Docker starten
+# Candy Corner auf einem Server mit Docker starten
 
-Dieses Setup startet den **nativen WordPress-/WooCommerce-Shop** mit dem FORME-Theme. Die React-/Sites-Designvorschau wird dafür nicht benötigt. Produkte, Größen, Bestände und Bestellungen lassen sich anschließend in WordPress verwalten.
+Dieses Setup startet den **nativen WordPress-/WooCommerce-Shop** mit dem Candy-Corner-Theme. Die React-/Sites-Designvorschau wird dafür nicht benötigt. Produkte, Liefergebiet, Bestände und Bestellungen lassen sich anschließend in WordPress verwalten.
 
 Enthalten sind WordPress mit Apache/PHP, WooCommerce, MariaDB, eine einmalige Einrichtung und ein optionaler Caddy-Reverse-Proxy für HTTPS. Der WordPress-Admin wird aus der lokalen `.env` angelegt. Die Einrichtung lässt bestehende Benutzer und Shop-Einstellungen bei späteren Starts unverändert.
 
@@ -50,7 +50,7 @@ docker compose up -d --build
 docker compose logs -f setup
 ```
 
-Wenn `FORME ist eingerichtet` erscheint, mit `Ctrl+C` die Logansicht verlassen. `setup` ist ein einmaliger Prozess: **`Exited (0)` ist der erfolgreiche Zustand**. Caddy startet nach erfolgreicher Einrichtung und fordert das Zertifikat automatisch an.
+Wenn `Candy Corner ist eingerichtet` erscheint, mit `Ctrl+C` die Logansicht verlassen. `setup` ist ein einmaliger Prozess: **`Exited (0)` ist der erfolgreiche Zustand**. Caddy startet nach erfolgreicher Einrichtung und fordert das Zertifikat automatisch an.
 
 - Shop: `https://shop.example.de`
 - Verwaltung: `https://shop.example.de/wp-admin/`
@@ -89,17 +89,22 @@ ssh -L 8080:127.0.0.1:8080 benutzer@server
 
 Läuft bereits Nginx, Traefik oder ein anderer Reverse-Proxy, `SITE_URL` auf die endgültige HTTPS-Adresse setzen. Der Proxy auf dem Host leitet auf `http://127.0.0.1:8080` weiter und muss den ursprünglichen `Host` sowie `X-Forwarded-Proto: https` übergeben. Ein Proxy in einem anderen Container benötigt stattdessen ein gemeinsames Docker-Netzwerk; dessen `127.0.0.1` ist nicht der Host.
 
-## 3. Kollektion und Shop konfigurieren
+## 3. Sortiment und Shop konfigurieren
 
-Nach dem ersten Start sind WooCommerce und FORME aktiv, die WooCommerce-Seiten angelegt und EUR/Deutschland sowie Europe/Berlin voreingestellt.
+Nach dem ersten Start sind WooCommerce und Candy Corner aktiv, die WooCommerce-Seiten angelegt und EUR/Deutschland sowie Europe/Berlin voreingestellt.
 
-- **Design → Customizer → FORME Startseite:** Kampagnentexte und Bilder ändern.
-- **Design → FORME Einrichtung:** optional vier Kleidungsartikel mit 18 Größenvarianten als Entwürfe anlegen. Die Produkte starten mit Bestand 0 und werden nicht automatisch verkauft.
-- **Produkte:** echte Artikel, Bilder, Größen, Materialangaben, Preise und Lagerbestände eintragen.
+- **Design → Customizer → Candy Corner Startseite:** Kampagnentexte und Bilder ändern.
+- **Design → Candy Corner Einrichtung:** optional vier Candy-Produkte als Entwürfe anlegen. Die Produkte starten mit Bestand 0 und werden nicht automatisch verkauft.
+- **Design → Candy Corner Einrichtung:** Liefer-PLZ und vollständige Abholadresse ergänzen. Vorgaben: Essen-Zentrum, 20 € Mindestbestellwert (auch Abholung), 5 € Lieferkosten als Endpreis. Erst danach den Lieferservice aktivieren. Er ersetzt andere Versandarten während der Aktivierung; vorhandene Versandzonen werden nicht verändert. Die PLZ-Prüfung und die Kasse verwenden dieselben Regeln. Ohne Liefer-PLZ keine Lieferung, ohne Abholadresse keine Abholung.
+- **Produkte:** echte Artikel, Bilder, Zutaten, Allergene, Nährwerte, Mengen, Preise und Lagerbestände eintragen.
 - **WooCommerce:** Zahlungsanbieter, Steuern, Versand und Bestell-E-Mails konfigurieren. Für zuverlässigen E-Mail-Versand einen SMTP-/Mailanbieter anbinden; das Container-Setup enthält keinen Mailserver.
 - Service-Menü und Betreibertexte ergänzen, danach eine vollständige Testbestellung mit dem Testmodus des gewählten Zahlungsanbieters durchführen.
 
-Die KI-Beispielbilder werden mitgeliefert. Sie müssen für reale Verkäufe zu den angebotenen Kleidungsstücken passen. Produktdetails, Konto und Warenkorb nutzen die nativen WooCommerce-Seiten; die lokale Merkliste der React-Vorschau gehört nicht zum Theme.
+Die KI-Beispielbilder werden mitgeliefert. Sie müssen für reale Verkäufe zu den angebotenen Produkten passen. Produktdetails, Konto und Warenkorb nutzen die nativen WooCommerce-Seiten; die lokale Merkliste der React-Vorschau gehört nicht zum Theme.
+
+## Update eines bisherigen FORME-Shops
+
+Der technische Theme-Ordner `wordpress/forme`, der Compose-Projektname `forme` und die Setup-Markierung bleiben erhalten, damit bestehende Volumes, Benutzer und Bestellungen weiterverwendet werden. Der sichtbare Markenname lautet jetzt Candy Corner. Ein Update ersetzt keine Inhalte in der Datenbank: bestehende Kleidungsartikel, Menüs, eigenes Logo und Customizer-Texte selbst prüfen und bei Bedarf umstellen. Unter **Einstellungen → Allgemein** den Seitentitel ändern. Bestehende Shopdaten werden weder gelöscht noch automatisch umgewidmet.
 
 ## Daten, Theme und Updates
 
@@ -107,13 +112,13 @@ Die KI-Beispielbilder werden mitgeliefert. Sie müssen für reale Verkäufe zu d
 | --- | --- |
 | Produkte, Kunden, Bestellungen, Einstellungen | Docker-Volume `forme_db_data` |
 | WordPress, Plugins und hochgeladene Medien | Docker-Volume `forme_wordpress_data` |
-| FORME-Theme | `wordpress/forme/`, im Container schreibgeschützt eingebunden |
+| Candy-Corner-Theme | `wordpress/forme/`, im Container schreibgeschützt eingebunden |
 | HTTPS-Zertifikate bei Caddy | Docker-Volume `forme_caddy_data` |
 | Zugangsdaten | lokale, nicht versionierte `.env` |
 
 Die Volumennamen verwenden `COMPOSE_PROJECT_NAME` als Präfix; für bestehende Installationen diesen Namen beibehalten. Die Volumes überstehen einen normalen Neustart oder `docker compose down`. **`docker compose down -v` löscht die Datenvolumes.**
 
-Theme-Code kommt aus Git. Anpassungen im Theme-Ordner werden beim nächsten `git pull` berücksichtigt; individuelle Erweiterungen gehören vorzugsweise in ein Child-Theme. Inhalte und Customizer-Einstellungen bleiben in der Datenbank. Das Web-Backend kann den schreibgeschützten FORME-Quellcode nicht überschreiben.
+Theme-Code kommt aus Git. Anpassungen im Theme-Ordner werden beim nächsten `git pull` berücksichtigt; individuelle Erweiterungen gehören vorzugsweise in ein Child-Theme. Inhalte und Customizer-Einstellungen bleiben in der Datenbank. Das Web-Backend kann den schreibgeschützten Theme-Quellcode nicht überschreiben.
 
 Nach einem Backup:
 
@@ -167,7 +172,7 @@ docker compose run --rm --no-deps -T --user 0 --entrypoint tar wpcli -xzf - -C /
 docker compose up -d
 ```
 
-Das Archiv enthält das schreibgeschützt eingebundene FORME-Theme nicht; dessen Git-Stand muss zur Sicherung passen. Die Wiederherstellung sollte regelmäßig in einer separaten Testinstallation geprüft werden.
+Das Archiv enthält das schreibgeschützt eingebundene Candy-Corner-Theme nicht; dessen Git-Stand muss zur Sicherung passen. Die Wiederherstellung sollte regelmäßig in einer separaten Testinstallation geprüft werden.
 
 ## Dateien und Versionen
 
@@ -181,7 +186,7 @@ Die WordPress-/WooCommerce-Versionen entsprechen der bereits getesteten Theme-Ko
 
 ## Validierung dieser Lieferung
 
-Compose-Konfiguration und HTTPS-Override wurden ohne Docker-Daemon geprüft; die Shellskripte wurden syntaktisch und die Erstinitialisierung mit einem simulierten WP-CLI auf Erststart/Wiederholung getestet. In der Erstellungsumgebung war keine Docker Engine vorhanden, daher wurde **kein Image-Build und kein Container-Ende-zu-Ende-Test** ausgeführt. Der frühere Theme-Test lief nativ in WordPress Playground mit WordPress 7.1.1 / WooCommerce 11.1.1 / PHP 8.3.
+Compose-Konfiguration und HTTPS-Override wurden ohne Docker-Daemon geprüft; die Shellskripte wurden syntaktisch und die Erstinitialisierung mit einem simulierten WP-CLI auf Erststart/Wiederholung getestet. In der Erstellungsumgebung war keine Docker Engine vorhanden, daher wurde **kein Image-Build und kein Container-Ende-zu-Ende-Test** ausgeführt. Das neue Theme wurde nativ in WordPress Playground mit WordPress 7.1.1 / WooCommerce 11.1.1 / PHP 8.3 geprüft: PLZ-Regeln, Mindestbestellwert nach Rabatten, Liefer-/Abholtarife, Sitzungsübergabe und sechs Shopseiten. Details: `docs/VALIDATION.md`.
 
 Vor Übergang in den echten Verkauf auf dem Zielserver Build, Healthchecks, Admin-Login und Testbestellung prüfen.
 

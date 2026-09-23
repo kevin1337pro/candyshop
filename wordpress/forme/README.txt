@@ -1,25 +1,11 @@
-FORME 1.0.0 — WordPress-Theme für einen Kleidungsshop
+Candy Corner 2.0 — WordPress / WooCommerce
 
-INSTALLATION
-1. WordPress → Design → Themes → Theme hinzufügen → Theme hochladen.
-2. forme-woocommerce-theme.zip hochladen und aktivieren.
-3. WooCommerce installieren/aktivieren und dessen Einrichtung abschließen.
-4. Design → Customizer → FORME Startseite: Texte und Kampagnenbilder ändern.
-5. Produkte → Erstellen: echte Kleidung, Bilder, Preise, Größen, Materialangaben und Bestände pflegen.
-6. Design → Menüs: Hauptnavigation und Service & Rechtliches zuweisen.
-7. Zahlung, Versand, Steuerdarstellung und Betreibertexte konfigurieren, anschließend Testbestellung durchführen.
+Installation: forme-woocommerce-theme.zip unter Design > Themes > Theme hochladen. WooCommerce installieren/aktivieren. Technischer Theme-Ordner und Textdomain bleiben "forme" für kompatible Updates.
 
-BEISPIELKOLLEKTION
-Design → FORME Einrichtung kann optional vier variable Produkte mit Größen als Entwürfe anlegen. Die Aktion ist geschützt und wiederholbar; vorhandene SKUs werden übersprungen. Varianten starten mit Bestand 0. Es werden weder Bestandsinhalte noch Shop-Einstellungen überschrieben. KI-Beispielbilder und Texte vor einem Verkauf mit realen Produktdaten ersetzen.
+Design > Candy Corner Einrichtung: Liefer-PLZ, Abholadresse, Mindestbestellwert und Lieferkosten. Vorgaben 20 EUR und 5 EUR, vorläufiger Standort Essen-Zentrum. Lieferservice erst nach kompletter Einrichtung aktivieren. Er ersetzt andere Versandarten, ohne deren Konfiguration zu löschen. PLZ und Abholadresse sind zunächst leer; es werden keine Gebiete erfunden. Ohne vollständige Konfiguration werden keine entsprechenden Versandraten angeboten. Mindestbestellwert gilt inklusive Warensteuer nach Rabatten, ohne Versand, für Lieferung und Abholung. Lieferkosten sind Endpreis inklusive ggf. anfallender Steuer.
 
-NATIVE WOOCOMMERCE-INTEGRATION
-Produkte, Produktkategorien, Suche, Größenauswahl, Preise, Bestand, Warenkorb, Kasse, Konto und Bestellungen werden von WooCommerce bereitgestellt. Das Theme nutzt WooCommerce-Hooks statt Kopien der Core-Templates. Zahlungsabwicklung benötigt die Einrichtung eines passenden WooCommerce-Zahlungsanbieters; im Theme sind keine Zugangsdaten enthalten.
+Design > Customizer > Candy Corner Startseite: Texte, Kampagnenbild. Design > Menüs: Hauptnavigation und Service/Rechtliches. Produkte: echte Bilder, Preise, Bestände und alle Produktinformationen pflegen. Optionale Beispielprodukte werden nur als Entwurf mit Bestand 0 angelegt; vorhandene SKUs werden übersprungen. Keine bestehenden Inhalte werden entfernt.
 
-Die separate Sites-Vorschau zeigt ein interaktives Design mit lokalem Warenkorb und Merkliste. Sie ist kein WordPress-Server und nimmt keine Zahlungen oder Bestellungen an. Die native WordPress-Version verwendet WooCommerce-Seiten für Warenkorb und Produktdetails; die Merkliste der Vorschau gehört nicht zum nativen Theme.
+WooCommerce bleibt für Warenkorb, Kasse, Konto und Zahlungen zuständig. Die Startseiten-Auswahl wird bei erfolgreicher Prüfung an die WooCommerce-Sitzung übergeben. Die Kasse prüft das Liefergebiet erneut. Die React-/Sites-Vorschau ist separat und nimmt keine echten Bestellungen entgegen.
 
-TECHNISCH
-PHP ab 8.1, WordPress ab 6.6, aktuelle stabile WooCommerce-Version empfohlen. Kein Node.js erforderlich. Keine externen Schriftarten oder Marketing-Tracker. Theme-Code GPL-2.0-or-later. Originale Bilder per eingebautem Imagegen erstellt, Prompts in ASSETS.md.
-
-QUELLEN ZUR IMPLEMENTIERUNG
-https://developer.woocommerce.com/docs/theming/theme-development/classic-theme-developer-handbook/
-https://developer.wordpress.org/playground/developers/local-development/wp-playground-cli/
+Für Docker siehe docker/README.md im Repository. Alle Theme-Dateien und Assets sind enthalten. Echte Produkte, Anschrift, Bestellzeiten, Betreiberinformationen, Steuern und Zahlungsanbieter vor Verkaufsstart vervollständigen und Testbestellungen durchführen.

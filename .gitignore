@@ -46,3 +46,6 @@ next-env.d.ts
 /backups/
 *.sql
 *.sql.gz
+
+# User source artwork remains local; approved logo is in public/images.
+/output/
