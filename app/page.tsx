@@ -28,6 +28,13 @@ import {
   SheetTitle,
   SheetDescription,
 } from '@/components/ui/sheet';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { shopConfig, checkPostcode, money } from '@/lib/shop-config';
 import {
   products,
@@ -97,10 +104,18 @@ export default function Home() {
   const [mode, setMode] = useState('delivery');
   const [postcode, setPostcode] = useState('');
   const [message, setMessage] = useState('');
+  const [checkedPostcode, setCheckedPostcode] = useState('');
+  const deliveryAllowed =
+    checkedPostcode === postcode && checkPostcode(postcode).available;
   const [category, setCategory] = useState('Alle');
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState('featured');
   const [cartOpen, setCartOpen] = useState(false);
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const [ageAction, setAgeAction] = useState<{
+    product: Product;
+    action: 'detail' | 'add';
+  } | null>(null);
   const [detail, setDetail] = useState<Product | null>(null);
   const [info, setInfo] = useState('');
   const [toast, setToast] = useState('');
@@ -145,7 +160,18 @@ export default function Home() {
   const remaining = Math.max(0, shopConfig.minimum - subtotal);
   const shipping =
     mode === 'delivery' && subtotal > 0 ? shopConfig.deliveryFee : 0;
-  const add = (p: Product) => {
+  const openProduct = (p: Product) => {
+    if (p.ageNotice && !ageConfirmed) {
+      setAgeAction({ product: p, action: 'detail' });
+      return;
+    }
+    setDetail(p);
+  };
+  const add = (p: Product, confirmed = ageConfirmed) => {
+    if (p.ageNotice && !confirmed) {
+      setAgeAction({ product: p, action: 'add' });
+      return;
+    }
     const old = getCart();
     if ((old.find((x) => x.id === p.id)?.qty || 0) >= 20) {
       setToast('Maximal 20 Stück je Artikel in der Vorschau.');
@@ -186,7 +212,7 @@ export default function Home() {
       <div className="announcement">
         <span>DEIN CANDY-SPOT IN ESSEN</span>
         <span>
-          <Truck size={14} /> Lieferung & Abholung{' '}
+          <Truck size={14} /> Lieferservice in Essen{' '}
           <span className="announcement-dot">✦</span> Ab{' '}
           {money(shopConfig.minimum)} Bestellwert
         </span>
@@ -242,7 +268,7 @@ export default function Home() {
               <br />
               Glück zu dir?
             </h2>
-            <p>Liefern lassen oder selbst abholen.</p>
+            <p>Persönlich geliefert. Bar bezahlt.</p>
           </div>
           <div className="order-form">
             <Tabs
@@ -268,6 +294,7 @@ export default function Home() {
                   onSubmit={(e) => {
                     e.preventDefault();
                     setMessage(checkPostcode(postcode).message);
+                    setCheckedPostcode(postcode);
                   }}
                 >
                   <label className="postcode-input">
@@ -281,6 +308,7 @@ export default function Home() {
                       value={postcode}
                       onChange={(e) => {
                         setPostcode(e.target.value.replace(/\D/g, ''));
+                        setCheckedPostcode('');
                         setMessage('');
                       }}
                       required
@@ -328,7 +356,7 @@ export default function Home() {
         <section className="hero wrap">
           <div className="hero-copy">
             <span className="eyebrow">
-              <span className="cyan-dot" /> GOOD MOOD. GREAT CANDY.
+              <span className="cyan-dot" /> DEIN LOKALER CANDY-LIEFERSERVICE
             </span>
             <h1>
               Dein Leben.
@@ -344,7 +372,7 @@ export default function Home() {
             </a>
             <div className="hero-caption">
               <MapPin size={15} />
-              <span>Sweet vibes. Made for Essen.</span>
+              <span>Aus unserem Laden. Direkt zu deiner Tür.</span>
             </div>
           </div>
           <div className="hero-visual">
@@ -367,13 +395,13 @@ export default function Home() {
         </section>
         <div className="values-strip wrap">
           <span>
-            <Candy size={21} /> Von süß bis extra sauer
+            <Candy size={21} /> Persönlich mit dem Auto geliefert
           </span>
           <span>
             <Store size={21} /> Dein Candy-Spot in Essen
           </span>
           <span>
-            <Package size={21} /> Dein Mix. Dein Moment.
+            <Package size={21} /> Barzahlung bei Übergabe
           </span>
         </div>
         <section className="catalog wrap" id="sortiment">
@@ -447,7 +475,7 @@ export default function Home() {
                     <button
                       className="product-open"
                       aria-label={`${p.name} ansehen`}
-                      onClick={() => setDetail(p)}
+                      onClick={() => openProduct(p)}
                     >
                       <ProductImage product={p} />
                     </button>
@@ -471,7 +499,7 @@ export default function Home() {
                       {p.category} <span>·</span> {p.unit}
                     </span>
                     <button
-                      onClick={() => setDetail(p)}
+                      onClick={() => openProduct(p)}
                       className="product-name"
                     >
                       {p.name}
@@ -600,9 +628,9 @@ export default function Home() {
             <details>
               <summary>Wohin liefert Candy Corner?</summary>
               <p>
-                Unser Liefergebiet wird zum Shopstart festgelegt. Mit der
-                PLZ-Prüfung oben kannst du nach Freischaltung sehen, ob wir zu
-                dir liefern. Aktuell geben wir noch keine Lieferzusage.
+                Wir liefern persönlich mit dem Auto innerhalb von Essen. Gib
+                oben deine PLZ ein. Außerhalb unserer Essener Liefer-PLZ ist
+                eine Lieferbestellung nicht möglich.
               </p>
             </details>
             <details>
@@ -621,6 +649,14 @@ export default function Home() {
               <p>
                 Geplant ist die Abholung in Essen-Zentrum. Die genaue Anschrift
                 und Abholzeiten werden zum Shopstart bekannt gegeben.
+              </p>
+            </details>
+            <details>
+              <summary>Wie bezahle ich?</summary>
+              <p>
+                Du bezahlst deine Bestellung bar bei der Übergabe. Unser Team
+                bringt dir die Snacks direkt aus dem Laden. Es gibt keinen
+                Paketversand.
               </p>
             </details>
             <details>
@@ -673,7 +709,7 @@ export default function Home() {
             </div>
             <div>
               <h3>Dein Candy Corner</h3>
-              <a href="#bestellen">Lieferung & Abholung</a>
+              <a href="#bestellen">Lieferservice in Essen</a>
               <a href="#fragen">Häufige Fragen</a>
               <button onClick={() => setInfo('Kontakt')}>Kontakt</button>
             </div>
@@ -792,23 +828,88 @@ export default function Home() {
               <p>
                 Beispielpreise.{' '}
                 {mode === 'delivery'
-                  ? 'Verfügbarkeit hängt vom Liefergebiet ab.'
+                  ? 'Persönlicher Lieferservice innerhalb von Essen.'
                   : 'Abholadresse folgt zum Shopstart.'}
               </p>
+              <p className="payment-hint">{shopConfig.paymentLabel}</p>
+              {mode === 'delivery' && !deliveryAllowed && (
+                <div className="delivery-block">
+                  <MapPin size={18} />
+                  <p>
+                    {postcode && checkedPostcode
+                      ? checkPostcode(postcode).message
+                      : 'Bitte zuerst deine Essener Liefer-PLZ prüfen.'}
+                  </p>
+                  <button
+                    onClick={() => {
+                      setCartOpen(false);
+                      document
+                        .getElementById('bestellen')
+                        ?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    PLZ prüfen <ArrowRight size={16} />
+                  </button>
+                </div>
+              )}
               <button
                 className="button primary full-width"
+                disabled={
+                  remaining > 0 || (mode === 'delivery' && !deliveryAllowed)
+                }
                 onClick={() => {
+                  if (
+                    remaining > 0 ||
+                    (mode === 'delivery' && !deliveryAllowed)
+                  )
+                    return;
                   setCartOpen(false);
                   setInfo('Bestellvorschau');
                 }}
               >
                 Bestellvorschau ansehen <ArrowRight size={19} />
               </button>
+              <small>Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.</small>
               <small>Es wird keine Bestellung ausgelöst.</small>
             </div>
           )}
         </SheetContent>
       </Sheet>
+      <Dialog
+        open={!!ageAction}
+        onOpenChange={(open) => {
+          if (!open) setAgeAction(null);
+        }}
+      >
+        <DialogContent className="age-dialog" showCloseButton={false}>
+          <DialogHeader>
+            <span className="age-badge">18+</span>
+            <DialogTitle>Bist du mindestens 18?</DialogTitle>
+            <DialogDescription>
+              Für diesen Artikel bitten wir dich um eine kurze
+              Altersbestätigung.
+            </DialogDescription>
+          </DialogHeader>
+          <button
+            className="button primary full-width"
+            onClick={() => {
+              if (!ageAction) return;
+              setAgeConfirmed(true);
+              if (ageAction.action === 'add') add(ageAction.product, true);
+              else setDetail(ageAction.product);
+              setAgeAction(null);
+            }}
+          >
+            Ja, ich bin mindestens 18
+          </button>
+          <button
+            className="button full-width"
+            onClick={() => setAgeAction(null)}
+          >
+            Nein, zurück
+          </button>
+        </DialogContent>
+      </Dialog>
       <Sheet
         open={!!detail}
         onOpenChange={(open) => {
@@ -897,8 +998,7 @@ export default function Home() {
                   <p>
                     Der Shop ist noch eine Vorschau. Es werden keine
                     Bestellungen, Adressen oder Zahlungen übermittelt.
-                    Liefergebiet, Abholadresse und echte Produkte werden zum
-                    Start ergänzt.
+                    Abholadresse und echte Produkte werden zum Start ergänzt.
                   </p>
                 </div>
                 <button

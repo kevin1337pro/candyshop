@@ -34,12 +34,12 @@ Ohne `openssl`: `.env.example` als `.env` kopieren, Dateirechte auf 600 setzen u
 
 ## 2a. Öffentlicher Server mit eigener Domain und HTTPS
 
-Zusätzlich diese Werte in der `.env` setzen (Beispieldomain ersetzen):
+Zusätzlich diese Werte in der `.env` setzen (für Candy Corner):
 
 ```dotenv
 COMPOSE_FILE=docker-compose.yml:docker-compose.https.yml
-SHOP_DOMAIN=shop.example.de
-SITE_URL=https://shop.example.de
+SHOP_DOMAIN=www.candycorner-essen.de
+SITE_URL=https://www.candycorner-essen.de
 ```
 
 `SHOP_DOMAIN` enthält nur den Hostnamen, ohne `https://` oder Pfad. Die HTTPS-Konfiguration verwendet daraus automatisch die passende WordPress-Adresse. `COMPOSE_FILE` sorgt dafür, dass auch spätere Compose-Befehle beide Dateien berücksichtigen.
@@ -52,8 +52,8 @@ docker compose logs -f setup
 
 Wenn `Candy Corner ist eingerichtet` erscheint, mit `Ctrl+C` die Logansicht verlassen. `setup` ist ein einmaliger Prozess: **`Exited (0)` ist der erfolgreiche Zustand**. Caddy startet nach erfolgreicher Einrichtung und fordert das Zertifikat automatisch an.
 
-- Shop: `https://shop.example.de`
-- Verwaltung: `https://shop.example.de/wp-admin/`
+- Shop: `https://www.candycorner-essen.de`
+- Verwaltung: `https://www.candycorner-essen.de/wp-admin/`
 
 ```sh
 docker compose ps -a
@@ -95,16 +95,36 @@ Nach dem ersten Start sind WooCommerce und Candy Corner aktiv, die WooCommerce-S
 
 - **Design → Customizer → Candy Corner Startseite:** Kampagnentexte und Bilder ändern.
 - **Design → Candy Corner Einrichtung:** optional vier Candy-Produkte als Entwürfe anlegen. Die Produkte starten mit Bestand 0 und werden nicht automatisch verkauft.
-- **Design → Candy Corner Einrichtung:** Liefer-PLZ und vollständige Abholadresse ergänzen. Vorgaben: Essen-Zentrum, 20 € Mindestbestellwert (auch Abholung), 5 € Lieferkosten als Endpreis. Erst danach den Lieferservice aktivieren. Er ersetzt andere Versandarten während der Aktivierung; vorhandene Versandzonen werden nicht verändert. Die PLZ-Prüfung und die Kasse verwenden dieselben Regeln. Ohne Liefer-PLZ keine Lieferung, ohne Abholadresse keine Abholung.
+- **Design → Candy Corner Einrichtung:** Die 32 voreingestellten Essener PLZ prüfen; bei Bedarf einzelne Gebiete entfernen. Vollständige Abholadresse ergänzen, sobald sie vorliegt. Vorgaben: Essen-Zentrum, 20 € Mindestbestellwert (auch Abholung), 5 € Lieferkosten als Endpreis. Sobald echte Artikel und Betreiberangaben vorhanden sind, den Lieferservice aktivieren. Lieferung kann ohne Abholadresse starten; Abholung bleibt dann gesperrt. Das Theme akzeptiert ausschließlich die lokale Lieferung oder ausdrücklich gewählte Abholung; vorhandene Versandzonen werden nicht verändert. Die PLZ-Prüfung und die Kasse verwenden dieselben Regeln. Ohne Liefer-PLZ keine Lieferung, ohne Abholadresse keine Abholung.
 - **Produkte:** echte Artikel, Bilder, Zutaten, Allergene, Nährwerte, Mengen, Preise und Lagerbestände eintragen.
-- **WooCommerce:** Zahlungsanbieter, Steuern, Versand und Bestell-E-Mails konfigurieren. Für zuverlässigen E-Mail-Versand einen SMTP-/Mailanbieter anbinden; das Container-Setup enthält keinen Mailserver.
-- Service-Menü und Betreibertexte ergänzen, danach eine vollständige Testbestellung mit dem Testmodus des gewählten Zahlungsanbieters durchführen.
+- **WooCommerce:** Barzahlung ist eingerichtet und die einzige angebotene Zahlungsart. Umsatzsteuer ist entsprechend der angefragten Kleinunternehmerregelung deaktiviert (§ 19 UStG); die Berechtigung dafür prüfen, denn ein Kleingewerbe allein genügt nicht. Bestell-E-Mails konfigurieren. Für zuverlässigen E-Mail-Versand einen SMTP-/Mailanbieter anbinden; das Container-Setup enthält keinen Mailserver.
+- Service-Menü und Betreibertexte ergänzen, danach eine vollständige Testbestellung mit Barzahlung durchführen. Beim Test keine echte Kundenadresse verwenden.
 
 Die KI-Beispielbilder werden mitgeliefert. Sie müssen für reale Verkäufe zu den angebotenen Produkten passen. Produktdetails, Konto und Warenkorb nutzen die nativen WooCommerce-Seiten; die lokale Merkliste der React-Vorschau gehört nicht zum Theme.
 
+## Bestellungen auf Handy und iPad
+
+Unter **WooCommerce → Bestellungen** sieht der Betreiber Kundenadresse, Telefonnummer, Artikel und Bestellbetrag. Neue Barbestellungen stehen in **In Bearbeitung**; erst nach Auslieferung und Barzahlung **Abgeschlossen** wählen. Bestände werden über WooCommerce geführt, daher auch Verkäufe im Laden im Bestand berücksichtigen.
+
+1. Offizielle WooCommerce-App installieren und mit `https://www.candycorner-essen.de` sowie dem eigenen WordPress-Benutzer verbinden. Für Mitarbeiter ein eigenes Konto mit Rolle **Shop-Manager** anlegen.
+2. In der App **Mein Shop → Never miss a new order** bzw. **Menü → Einstellungen → Push-Mitteilungen aktivieren** wählen. Mitteilungen auf dem Gerät erlauben.
+3. Mit WooCommerce ab 10.9.2 und App ab 25.0.1 lässt sich Push direkt über die integrierte Verbindung aktivieren; dafür sind normalerweise weder das vollständige Jetpack-Plugin noch ein WordPress.com-Konto erforderlich. Falls die Funktion auf dem Gerät noch nicht angeboten wird, den offiziellen Einrichtungsweg in der App verwenden.
+4. Eine Testbestellung durchführen und Eingang auf **jedem** benötigten Gerät prüfen. Die Geräte sind durch diese Code-Lieferung noch nicht verbunden.
+5. Zusätzlich **WooCommerce → Einstellungen → E-Mails → Neue Bestellung** aktivieren und Empfänger setzen. Ein SMTP-/Maildienst ist separat einzurichten; Docker selbst enthält keinen Mailserver.
+
+[Offizielle Anleitung für Push-Mitteilungen](https://woocommerce.com/document/woo-mobile-notifications/), [Barzahlung in WooCommerce](https://woocommerce.com/document/cash-on-delivery/).
+
+## 18+-Hinweis pro Artikel
+
+Unter **Produkte → Artikel bearbeiten → Produktdaten → Allgemein** lässt sich **18+ Hinweis anzeigen** aktivieren. Beim Öffnen oder Hinzufügen erscheint eine kurze Bestätigung. Bei „Nein“ bleibt der Artikel ungeöffnet bzw. wird nicht hinzugefügt. Die Bestätigung gilt für die WooCommerce-Sitzung. Direkte Warenkorb-Anfragen ohne Bestätigung werden ebenfalls abgewiesen. Keiner der vier Beispielartikel ist markiert. Es handelt sich um eine Selbstauskunft, nicht um einen Altersnachweis; konkrete betroffene Produktarten sind noch nicht angegeben.
+
+## Mehrere Domains
+
+[Multisite-Anleitung](MULTISITE.md): Eine WordPress-Installation und MariaDB können mehrere getrennte Shops verwalten. Das Standardsetup bleibt ein einzelner Shop. Die Option `CANDY_MULTISITE=1` bereitet die Netzwerkeinrichtung vor und entfernt globale URL-Overrides; sie konvertiert keine Datenbank. Mehrere Domains für denselben Shop benötigen nur Weiterleitungen.
+
 ## Update eines bisherigen FORME-Shops
 
-Der technische Theme-Ordner `wordpress/forme`, der Compose-Projektname `forme` und die Setup-Markierung bleiben erhalten, damit bestehende Volumes, Benutzer und Bestellungen weiterverwendet werden. Der sichtbare Markenname lautet jetzt Candy Corner. Ein Update ersetzt keine Inhalte in der Datenbank: bestehende Kleidungsartikel, Menüs, eigenes Logo und Customizer-Texte selbst prüfen und bei Bedarf umstellen. Unter **Einstellungen → Allgemein** den Seitentitel ändern. Bestehende Shopdaten werden weder gelöscht noch automatisch umgewidmet.
+Der technische Theme-Ordner `wordpress/forme`, der Compose-Projektname `forme` und die Setup-Markierung bleiben erhalten, damit bestehende Volumes, Benutzer und Bestellungen weiterverwendet werden. Der sichtbare Markenname lautet jetzt Candy Corner. Dieses Update richtet einmalig Barzahlung, Deutschland und die Kleinunternehmer-Vorgabe pro Candy-Corner-Website ein. Der Lieferservice bleibt bis zur Freischaltung aus. Vorhandene Inhalte werden nicht ersetzt: bestehende Kleidungsartikel, Menüs, eigenes Logo und Customizer-Texte selbst prüfen und bei Bedarf umstellen. Unter **Einstellungen → Allgemein** den Seitentitel ändern. Bestehende Shopdaten werden weder gelöscht noch automatisch umgewidmet.
 
 ## Daten, Theme und Updates
 

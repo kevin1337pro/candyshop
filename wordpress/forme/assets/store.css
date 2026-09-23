@@ -2118,3 +2118,38 @@ progress::-webkit-progress-value {
     max-width: 100%;
   }
 }
+
+/* Store palette: pink and cyan remain visible throughout the shopping journey. */
+body{background:#0b0813;background-image:radial-gradient(ellipse at 0% 20%,#76135b20,transparent 42%),radial-gradient(ellipse at 100% 40%,#00647b20,transparent 42%);background-attachment:fixed}
+.announcement{background:linear-gradient(95deg,#441332,#132d3c);border-bottom-color:#5d305b}
+.site-header{border-bottom:1px solid #705079}
+.order-panel{background:linear-gradient(110deg,#2d152b,#171722 50%,#102934);border-color:#7a426e;box-shadow:-16px 7px 55px #ff38b710,16px 7px 55px #00dcff12}
+.fulfillment-tabs [data-slot=tabs-trigger][data-active]{background:linear-gradient(110deg,#bd267e,#713683);color:#fff}
+.fulfillment-tabs [data-slot=tabs-trigger][data-active][value=pickup]{background:#166875}
+.order-intro .eyebrow{color:#ff73d1}
+.hero h1 em{background:linear-gradient(105deg,#ff41bb 5%,#e077f7 60%,#57efff);background-clip:text;-webkit-text-fill-color:transparent}
+.hero-stamp{background:#083b43;border:2px solid #5deeff;box-shadow:0 0 30px #17d8f827}
+.values-strip{border-color:#314d59;background:linear-gradient(90deg,#28122799,#10333d99);border-radius:12px;padding-inline:14px}
+.values-strip svg{color:#60f0ff}
+.product-card{border:1px solid #55344f;background:linear-gradient(160deg,#251526,#111820);border-radius:18px;padding:9px 9px 17px}
+.product-card:nth-child(even){border-color:#2b5660;background:linear-gradient(160deg,#132a35,#191322)}
+.product-meta{padding-inline:7px}.product-bottom strong{color:#83f3ff}
+.quick-add{background:#fa3ab7;color:#230918;border-color:#ff78ce}
+.product-card:nth-child(even) .quick-add{background:#63e9f5;color:#092d36;border-color:#b8fbff}
+.mood-banner{background:linear-gradient(110deg,#431639,#221830 55%,#12414c);border-color:#8b4780}
+.how-section li:nth-child(2)>span{color:var(--cyan);border-color:#306673;background:#13323d}
+.faq-list details[open]{background:#221529;border-radius:12px;padding:20px}
+.payment-hint{color:#7cecf6!important;font-weight:700}
+.delivery-block{display:flex!important;flex-wrap:wrap;justify-content:flex-start!important;align-items:flex-start;padding:13px;background:#291725;border:1px solid #71334f;border-radius:10px;gap:10px!important;margin:16px 0!important}
+.delivery-block>svg{color:#ff80c5}.delivery-block p{flex:1;margin:0;color:#f5d1e8;font-size:14px}.delivery-block button{display:flex;align-items:center;gap:10px;margin-left:28px;font-size:14px;text-decoration:underline}
+@media(max-width:680px){.product-grid{gap:20px 10px}.product-card{padding:6px 6px 12px;border-radius:15px}.product-visual{border-radius:10px}.product-meta{padding-inline:3px}.product-name{font-size:14px}.values-strip{font-size:12px;padding-inline:5px}.hero .eyebrow{letter-spacing:1px}}
+
+.candy-tax-note { max-width: 1200px; margin: 1rem auto; padding: 0 1.25rem; font-size: .8rem; color: inherit; opacity: .8; }
+.candy-age-dialog { width: min(460px, calc(100% - 32px)); border: 1px solid #fa32bc; border-radius: 24px; padding: 32px; background: #14121e; color: #fff; box-shadow: 0 0 70px #e400a338; }
+.candy-age-dialog::backdrop { background: #06050bcc; backdrop-filter: blur(7px); }
+.candy-age-dialog h2 { font-size: 1.8rem; line-height: 1.15; margin: 16px 0; }
+.candy-age-dialog p { color: #d8d1e4; }
+.candy-age-badge { display: inline-block; padding: 8px 12px; background: #03d9ee; color: #101019; font-weight: 900; border-radius: 12px; }
+.candy-age-actions { display: grid; gap: 10px; margin-top: 24px; }
+.candy-age-actions .button { width: 100%; justify-content: center; }
+.candy-age-notice .woocommerce-loop-product__title::after { content: '18+'; margin-left: 8px; font-size: 12px; color: #ba006f; }

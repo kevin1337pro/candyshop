@@ -1,19 +1,24 @@
 <?php
 /** Candy Corner fulfilment. Settings, PLZ check and checkout share the same rules. */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
+function candy_essen_postcodes() {
+ static $codes;
+ if ( null === $codes ) { $codes = json_decode( file_get_contents( get_template_directory() . '/data/essen-postcodes.json' ), true ) ?: array(); }
+ return $codes;
+}
 function candy_settings() {
- return wp_parse_args( get_option( 'candy_corner_delivery', array() ), array( 'enabled' => 'no', 'postcodes' => '', 'pickup_label' => 'Essen-Zentrum', 'pickup_address' => '', 'minimum' => '20.00', 'fee' => '5.00' ) );
+ return wp_parse_args( get_option( 'candy_corner_delivery', array() ), array( 'enabled' => 'no', 'postcodes' => implode( "\n", candy_essen_postcodes() ), 'pickup_label' => 'Essen-Zentrum', 'pickup_address' => '', 'minimum' => '20.00', 'fee' => '5.00', 'small_business' => 'yes' ) );
 }
 function candy_postcodes( $settings = null ) {
  $settings = $settings ?: candy_settings();
- return array_values( array_filter( preg_split( '/[\s,;]+/', trim( $settings['postcodes'] ) ), function( $value ) { return (bool) preg_match( '/^\d{5}$/D', $value ); } ) );
+ return array_values( array_intersect( preg_split( '/[\s,;]+/', trim( $settings['postcodes'] ) ), candy_essen_postcodes() ) );
 }
 function candy_check_postcode( $postcode, $country = 'DE' ) {
  $settings = candy_settings();
  if ( ! preg_match( '/^\d{5}$/D', $postcode ) ) { return array( 'available' => false, 'message' => 'Bitte gib eine gültige fünfstellige Postleitzahl ein.' ); }
  if ( 'yes' !== $settings['enabled'] || ! candy_postcodes( $settings ) ) { return array( 'available' => false, 'message' => 'Unser Liefergebiet wird gerade eingerichtet. Eine Lieferzusage ist noch nicht möglich.' ); }
  $available = 'DE' === $country && in_array( $postcode, candy_postcodes( $settings ), true );
- return array( 'available' => $available, 'message' => $available ? 'Gute Nachrichten! Wir liefern nach ' . $postcode . '.' : 'Diese PLZ liegt außerhalb unseres Liefergebiets. Prüfe alternativ die Abholung.' );
+ return array( 'available' => $available, 'message' => $available ? 'Wir liefern persönlich nach ' . $postcode . '. Du bezahlst bar bei Übergabe.' : 'Diese PLZ liegt außerhalb unseres Lieferbereichs in Essen. Eine Lieferbestellung ist hier nicht möglich.' );
 }
 function candy_money( $value ) { return function_exists( 'wc_price' ) ? wc_price( $value ) : esc_html( number_format_i18n( (float) $value, 2 ) . ' €' ); }
 function candy_delivery_ajax() {
@@ -28,6 +33,8 @@ function candy_delivery_ajax() {
   $mode = 'delivery';
   $postcode = isset( $_POST['postcode'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['postcode'] ) ) ) : '';
   $result = candy_check_postcode( $postcode );
+  WC()->session->set( 'candy_fulfilment', 'delivery' );
+  WC()->session->set( 'chosen_shipping_methods', array( 'candy_corner_delivery' ) );
   // Replace previous eligibility even when a newly entered postcode is unavailable.
   WC()->customer->set_shipping_country( 'DE' ); WC()->customer->set_shipping_postcode( $postcode ); WC()->customer->save();
   if ( WC()->cart ) { WC()->cart->calculate_totals(); }
@@ -63,7 +70,7 @@ add_action( 'woocommerce_shipping_init', function() {
   }
   public function calculate_shipping( $package = array() ) {
    $settings = candy_settings();
-   if ( '' === trim( $settings['pickup_address'] ) ) { return; }
+   if ( '' === trim( $settings['pickup_address'] ) || ! WC()->session || 'pickup' !== WC()->session->get( 'candy_fulfilment' ) ) { return; }
    $this->add_rate( array( 'id' => $this->id, 'label' => 'Abholung – ' . $settings['pickup_label'] . ', ' . $settings['pickup_address'], 'cost' => 0, 'taxes' => false, 'package' => $package ) );
   }
  }
@@ -73,13 +80,13 @@ add_filter( 'woocommerce_shipping_methods', function( $methods ) { $methods['can
 // must invalidate old session rates, too (the core transient uses seconds).
 add_filter( 'woocommerce_cart_shipping_packages', function( $packages ) {
  $revision = hash( 'sha256', wp_json_encode( candy_settings() ) );
- foreach ( $packages as &$package ) { $package['candy_rules_revision'] = $revision; }
+ foreach ( $packages as &$package ) { $package['candy_rules_revision'] = $revision; $package['candy_fulfilment'] = WC()->session ? WC()->session->get( 'candy_fulfilment', 'delivery' ) : 'delivery'; }
  unset( $package );
  return $packages;
 } );
 // Opt-in local service: alternative configured methods cannot bypass its PLZ restriction.
 add_filter( 'woocommerce_package_rates', function( $rates ) {
- if ( 'yes' !== candy_settings()['enabled'] ) { return $rates; }
+ if ( 'yes' !== candy_settings()['enabled'] ) { return array(); }
  return array_filter( $rates, function( $rate ) { return in_array( $rate->get_method_id(), array( 'candy_corner_delivery', 'candy_corner_pickup' ), true ); } );
 }, 100 );
 add_filter( 'woocommerce_shipping_chosen_method', function( $chosen, $rates ) {

@@ -15,9 +15,9 @@ function forme_setup() {
 }
 add_action( 'after_setup_theme', 'forme_setup' );
 function forme_assets() {
- wp_enqueue_style( 'forme', get_stylesheet_uri(), array(), '2.0.0' );
- wp_enqueue_style( 'forme-store', get_template_directory_uri() . '/assets/store.css', array( 'forme' ), '2.0.0' );
- wp_enqueue_script( 'forme-store', get_template_directory_uri() . '/assets/store.js', array(), '2.0.0', true );
+ wp_enqueue_style( 'forme', get_stylesheet_uri(), array(), '2.1.0' );
+ wp_enqueue_style( 'forme-store', get_template_directory_uri() . '/assets/store.css', array( 'forme' ), '2.1.0' );
+ wp_enqueue_script( 'forme-store', get_template_directory_uri() . '/assets/store.js', array(), '2.1.0', true );
  if ( class_exists( 'WC_AJAX' ) ) { wp_localize_script( 'forme-store', 'candyDelivery', array( 'url' => WC_AJAX::get_endpoint( 'candy_delivery' ), 'nonce' => wp_create_nonce( 'candy_delivery' ) ) ); }
 }
 add_action( 'wp_enqueue_scripts', 'forme_assets' );
@@ -93,3 +93,6 @@ function forme_customize_register( $customizer ) {
 add_action( 'customize_register', 'forme_customize_register' );
 require get_template_directory() . '/inc-delivery.php';
 require get_template_directory() . '/inc-setup.php';
+
+require get_template_directory() . '/inc-business.php';
+require get_template_directory() . '/inc-age-notice.php';

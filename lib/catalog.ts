@@ -8,6 +8,7 @@ export type Product = {
   tag: string;
   description: string;
   ingredients: string;
+  ageNotice?: boolean;
 };
 export const products: Product[] = [
   {

@@ -6,9 +6,14 @@ x-wordpress-environment: &wordpress-environment
   WORDPRESS_DB_USER: ${DB_USER:-wordpress}
   WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD in .env setzen}
   SITE_URL: ${SITE_URL:?SITE_URL in .env setzen}
+  CANDY_MULTISITE: ${CANDY_MULTISITE:-0}
   WORDPRESS_CONFIG_EXTRA: |
-    define('WP_HOME', getenv('SITE_URL'));
-    define('WP_SITEURL', getenv('SITE_URL'));
+    if (getenv('CANDY_MULTISITE') === '1') {
+      define('WP_ALLOW_MULTISITE', true);
+    } else {
+      define('WP_HOME', getenv('SITE_URL'));
+      define('WP_SITEURL', getenv('SITE_URL'));
+    }
     define('WP_MEMORY_LIMIT', '256M');
     define('WP_MAX_MEMORY_LIMIT', '512M');
     define('DISALLOW_FILE_EDIT', true);

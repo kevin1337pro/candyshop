@@ -1,11 +1,14 @@
-// Beträge in Cent. Liefer-PLZ erst nach Freigabe des tatsächlichen Liefergebiets eintragen.
+import essenPostcodes from '../wordpress/forme/data/essen-postcodes.json';
+// Gemeinsame Essener PLZ-Liste für Vorschau und WordPress. Beträge in Cent.
 export const shopConfig = {
   name: 'Candy Corner',
   pickupLabel: 'Essen-Zentrum',
   pickupAddress: '',
   minimum: 2000,
   deliveryFee: 500,
-  deliveryPostcodes: [] as string[],
+  deliveryPostcodes: essenPostcodes,
+  domain: 'www.candycorner-essen.de',
+  paymentLabel: 'Barzahlung bei Übergabe',
 } as const;
 export const money = (cents: number) =>
   (cents / 100).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
@@ -29,7 +32,7 @@ export function checkPostcode(raw: string) {
     available,
     status: available ? 'available' : 'unavailable',
     message: available
-      ? `Gute Nachrichten! Wir liefern nach ${postcode}.`
-      : 'Diese PLZ liegt außerhalb unseres Liefergebiets. Wähle alternativ Abholung in Essen-Zentrum.',
+      ? `Wir liefern persönlich nach ${postcode} Essen. Du bezahlst bar bei Übergabe.`
+      : 'Diese Adresse liegt außerhalb unseres Lieferbereichs in Essen. Eine Lieferbestellung ist für diese PLZ nicht möglich.',
   };
 }
