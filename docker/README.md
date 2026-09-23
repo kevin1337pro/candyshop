@@ -14,13 +14,13 @@ Enthalten sind WordPress mit Apache/PHP, WooCommerce, MariaDB, eine einmalige Ei
 ## 1. Dateien und Zugangsdaten vorbereiten
 
 ```sh
-git clone https://github.com/kevin1337pro/forme-clothing-shop.git
-cd forme-clothing-shop
+git clone https://github.com/kevin1337pro/candyshop.git
+cd candyshop
 sh docker/create-env.sh
 nano .env
 ```
 
-Alternativ das [Repository als ZIP](https://github.com/kevin1337pro/forme-clothing-shop/archive/refs/heads/main.zip) herunterladen und entpacken. Den **gesamten Ordner** auf den Server übertragen; das Dockerfile benötigt `wordpress/forme/` und `docker/`.
+Alternativ das [Repository als ZIP](https://github.com/kevin1337pro/candyshop/archive/refs/heads/main.zip) herunterladen und entpacken. Den **gesamten Ordner** auf den Server übertragen; das Dockerfile benötigt `wordpress/forme/` und `docker/`.
 
 `create-env.sh` erzeugt drei unterschiedliche Zufallspasswörter und eine `.env` mit Dateirechten 600. Es überschreibt keine vorhandene `.env`. Mindestens die tatsächliche Admin-E-Mail eintragen:
 
