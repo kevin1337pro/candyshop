@@ -251,7 +251,7 @@ export default function Home() {
           <button className="bag-button" onClick={() => setCartOpen(true)}>
             <ShoppingBag size={19} />
             <span className="bag-label">Warenkorb</span>
-            <b>{count}</b>
+            <b className="bag-count">{count}</b>
           </button>
         </div>
       </header>
@@ -268,7 +268,7 @@ export default function Home() {
               <br />
               Glück zu dir?
             </h2>
-            <p>Persönlich geliefert. Bar bezahlt.</p>
+            <p>Persönlich geliefert. Einfach bezahlt.</p>
           </div>
           <div className="order-form">
             <Tabs
@@ -401,7 +401,7 @@ export default function Home() {
             <Store size={21} /> Dein Candy-Spot in Essen
           </span>
           <span>
-            <Package size={21} /> Barzahlung bei Übergabe
+            <Package size={21} /> Dein Candy-Spot in Essen
           </span>
         </div>
         <section className="catalog wrap" id="sortiment">
@@ -654,9 +654,9 @@ export default function Home() {
             <details>
               <summary>Wie bezahle ich?</summary>
               <p>
-                Du bezahlst deine Bestellung bar bei der Übergabe. Unser Team
-                bringt dir die Snacks direkt aus dem Laden. Es gibt keinen
-                Paketversand.
+                Im Shop ist Barzahlung bei Übergabe vorgesehen. PayPal kommt
+                nach der Kontofreischaltung hinzu. Diese Designvorschau nimmt
+                keine Zahlungen entgegen. Es gibt keinen Paketversand.
               </p>
             </details>
             <details>

@@ -8,6 +8,9 @@ FROM ${WORDPRESS_IMAGE}
 ARG WOOCOMMERCE_VERSION=11.1.1
 ARG WOOCOMMERCE_SHA256=c5748c60a28c5d4b439109def3955c5a629f7cd66b919ae5aefa588bcaace710
 
+ARG PAYPAL_VERSION=4.1.3
+ARG PAYPAL_SHA256=179e6fa9ede40fb2b05a3ac06c08a47710536e554c171db6e4d1b777d94abb97
+
 # The official WordPress image supplies Apache, PHP, mysqli, intl and ZipArchive.
 COPY --from=wpcli /usr/local/bin/wp /usr/local/bin/wp
 RUN set -eu; \
@@ -19,9 +22,21 @@ RUN set -eu; \
     chown -R www-data:www-data /usr/src/wordpress/wp-content/plugins/woocommerce; \
     rm /tmp/woocommerce.zip
 
+# Official, free WooCommerce PayPal Payments; credentials are entered in wp-admin.
+RUN set -eu; \
+    curl --fail --show-error --location --retry 3 \
+      "https://downloads.wordpress.org/plugin/woocommerce-paypal-payments.${PAYPAL_VERSION}.zip" \
+      --output /tmp/paypal.zip; \
+    printf '%s  %s\n' "$PAYPAL_SHA256" /tmp/paypal.zip | sha256sum --check --strict -; \
+    php -r '$zip = new ZipArchive(); if ($zip->open("/tmp/paypal.zip") !== true || !$zip->extractTo("/usr/src/wordpress/wp-content/plugins")) { exit(1); } $zip->close();'; \
+    chown -R www-data:www-data /usr/src/wordpress/wp-content/plugins/woocommerce-paypal-payments; \
+    rm /tmp/paypal.zip
+
 COPY --chown=www-data:www-data wordpress/forme/ /usr/src/wordpress/wp-content/themes/forme/
 COPY docker/wordpress.ini /usr/local/etc/php/conf.d/forme.ini
 COPY --chmod=0755 docker/setup-wordpress.sh /usr/local/bin/forme-setup
+
+COPY docker/sync-site-url.php /usr/local/share/candy-sync-site-url.php
 
 WORKDIR /var/www/html
 # Keep the official entrypoint: it initializes the persistent WordPress volume.

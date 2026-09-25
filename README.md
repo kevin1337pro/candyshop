@@ -5,7 +5,7 @@ Neugestaltung auf Basis des bereitgestellten Logos: Schwarz, Neonpink und Cyan. 
 ## Zwei passende Ausgaben
 
 - **`app/`**: interaktive Sites-/React-Designvorschau. Suche, Filter, Sortierung, Merkliste für die Sitzung, Produktdetails und lokaler Warenkorb. Beispielprodukte/-preise, keine Bestell- oder Zahlungsabwicklung und keine Live-WordPress-Verbindung.
-- **`wordpress/forme/`**: natives WordPress-Theme **Candy Corner 2.1** mit WooCommerce. Echte Produktverwaltung, Warenkorb, Konto, Kasse, Preise/Bestände und Barbestellungen laufen über WooCommerce. Der Ordnername `forme` bleibt für kompatible Updates erhalten.
+- **`wordpress/forme/`**: natives WordPress-Theme **Candy Corner 2.2** mit WooCommerce. Echte Produktverwaltung, Warenkorb, Konto, Kasse, Preise/Bestände und Bar-/PayPal-Bestellungen laufen über WooCommerce. Der Ordnername `forme` bleibt für kompatible Updates erhalten.
 
 ## Lieferung und Abholung
 
@@ -57,3 +57,13 @@ Die gewünschte [Spizzenzeit-Referenz](https://spizzenzeit-essen.de/) dient als 
 - [WordPress Playground](https://developer.wordpress.org/playground/developers/local-development/wp-playground-cli/)
 
 Die PLZ-Liste liegt gemeinsam in `wordpress/forme/data/essen-postcodes.json`. Quelle: [Stadt Essen, 3. Fortschrittsbericht 2023, PLZ-Tabelle](https://media.essen.de/media/wwwessende/aemter/gha/2025_dokumente/3._Fortschrittsbericht_2023.pdf). [§ 19 UStG](https://www.gesetze-im-internet.de/ustg_1980/__19.html).
+
+## Update vom 25.09.2026
+
+Mobile Logo-Einpassung und Warenkorb korrigiert, offizielle PayPal-Anbindung vorbereitet, rechtliche Entwürfe und elektronischer Widerruf ergänzt. Betreiberangaben bleiben auf Wunsch Platzhalter. PayPal-Geschäftskonto ist noch anzulegen/zu verbinden.
+
+- **[Server-Update für vape.miami-enterprise.com](docker/UPDATE-2026-09.md)** — Backup, bestehende Datenvolumes, öffentliche URL ohne internen Port.
+- **[PayPal: Gebühren und Einrichtung](docs/PAYPAL.md)** — kostenlose Erweiterung, kostenpflichtige Transaktionen.
+- **[Rechtstexte und noch benötigte Angaben](docs/RECHTLICHES.md)** — Bearbeitung in WordPress unter Design → Rechtstexte & PayPal.
+
+Der Produktionsshop liegt auf eurem eigenen Server. Die Sites-Adresse bleibt eine öffentliche Designvorschau ohne Bestell- oder Zahlungsabwicklung.

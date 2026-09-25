@@ -1,5 +1,5 @@
 <?php
-/** Candy Corner's local, cash-on-handover order workflow. */
+/** Local delivery with cash on handover or the official PayPal gateway. */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 function candy_configure_business() {
@@ -27,7 +27,7 @@ add_action( 'init', function() {
 }, 20 );
 add_filter( 'woocommerce_available_payment_gateways', function( $gateways ) {
  if ( is_admin() && ! wp_doing_ajax() ) { return $gateways; }
- return isset( $gateways['cod'] ) ? array( 'cod' => $gateways['cod'] ) : array();
+ return array_intersect_key( $gateways, array_flip( candy_payment_methods() ) );
 }, 100 );
 add_filter( 'wc_tax_enabled', function( $enabled ) { return 'yes' === candy_settings()['small_business'] ? false : $enabled; } );
 function candy_tax_notice() {
@@ -66,13 +66,13 @@ add_action( 'woocommerce_after_checkout_validation', function( $data, $errors ) 
  $shipping = ! empty( $data['ship_to_different_address'] );
  $message = candy_fulfilment_error( $data['shipping_method'] ?? array(), $data[ $shipping ? 'shipping_postcode' : 'billing_postcode' ] ?? '', $data[ $shipping ? 'shipping_country' : 'billing_country' ] ?? '' );
  if ( $message ) { $errors->add( 'candy_delivery', $message ); }
- if ( 'cod' !== ( $data['payment_method'] ?? '' ) ) { $errors->add( 'candy_cash', 'Bitte wähle Barzahlung bei Übergabe.' ); }
+ if ( ! in_array( $data['payment_method'] ?? '', candy_payment_methods(), true ) ) { $errors->add( 'candy_payment', 'Bitte wähle eine verfügbare Zahlungsart: Barzahlung oder PayPal.' ); }
 }, 10, 2 );
 function candy_validate_order( $order ) {
  $methods = array();
  foreach ( $order->get_shipping_methods() as $item ) { $methods[] = $item->get_method_id(); }
  $message = candy_fulfilment_error( $methods, $order->get_shipping_postcode(), $order->get_shipping_country() );
- if ( ! $message && 'cod' !== $order->get_payment_method() ) { $message = 'Bitte wähle Barzahlung bei Übergabe.'; }
+ if ( ! $message && ! in_array( $order->get_payment_method(), candy_payment_methods(), true ) ) { $message = 'Bitte wähle eine verfügbare Zahlungsart: Barzahlung oder PayPal.'; }
  if ( ! $message && ! trim( $order->get_billing_phone() ) ) { $message = 'Bitte gib eine Telefonnummer für Rückfragen zur Lieferung ein.'; }
  if ( $message ) { throw new Exception( $message ); }
  $order->update_meta_data( '_candy_small_business', candy_settings()['small_business'] );
@@ -89,3 +89,16 @@ add_action( 'woocommerce_admin_order_data_after_order_details', function( $order
   echo '<p><strong>Barzahlung:</strong> Erst nach Übergabe und Geldeingang als „Abgeschlossen“ markieren.</p>';
  }
 } );
+
+// Availability/account checks remain the payment plugin's responsibility.
+function candy_payment_methods() { return array( 'cod', 'ppcp-gateway' ); }
+// Require the regular checkout: no product, cart or block-express shortcuts.
+add_filter( 'woocommerce_paypal_payments_selected_button_locations', function( $locations ) {
+ return array_values( array_intersect( $locations, array( 'checkout' ) ) );
+}, 100 );
+add_filter( 'woocommerce_paypal_payments_should_render_pay_later_messaging', '__return_false' );
+add_filter( 'woocommerce_paypal_payments_disabled_funding', function( $funding ) {
+ return array_values( array_unique( array_merge( $funding, array( 'paylater', 'credit', 'card' ) ) ) );
+} );
+add_filter( 'woocommerce_paypal_payments_early_wc_checkout_validation_enabled', '__return_true' );
+add_filter( 'woocommerce_paypal_payments_early_wc_checkout_account_creation_validation_enabled', '__return_true' );

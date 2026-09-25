@@ -4,5 +4,7 @@
 
 {$SHOP_DOMAIN} {
     encode zstd gzip
+    # Avoid Apache directory redirects choosing its internal HTTP scheme/port.
+    redir /wp-admin /wp-admin/ 308
     reverse_proxy wordpress:80
 }

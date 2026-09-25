@@ -4,6 +4,8 @@ Dieses Setup startet den **nativen WordPress-/WooCommerce-Shop** mit dem Candy-C
 
 Enthalten sind WordPress mit Apache/PHP, WooCommerce, MariaDB, eine einmalige Einrichtung und ein optionaler Caddy-Reverse-Proxy für HTTPS. Der WordPress-Admin wird aus der lokalen `.env` angelegt. Die Einrichtung lässt bestehende Benutzer und Shop-Einstellungen bei späteren Starts unverändert.
 
+> **Bestehender Server auf vape.miami-enterprise.com:** Zuerst [Update-Anleitung 2.2](UPDATE-2026-09.md) verwenden. PayPal und Rechtstexte sind vorbereitet, Kontoverbindung und Betreiberangaben fehlen noch.
+
 ## Voraussetzungen
 
 - Linux-Server mit Docker Engine und aktuellem Docker Compose Plugin (`docker compose version`). ARM64 und AMD64 werden von den verwendeten Images unterstützt.
@@ -64,7 +66,7 @@ Auf demselben Server darf kein anderer Dienst bereits Ports 80/443 belegen. Fall
 
 ## 2b. Bestehender Reverse-Proxy oder lokaler Test
 
-Für einen lokalen Test die Vorgaben beibehalten:
+Für einen lokalen Test die öffentliche Vorgabe ausdrücklich durch diese Werte ersetzen:
 
 ```dotenv
 COMPOSE_FILE=docker-compose.yml
@@ -97,7 +99,7 @@ Nach dem ersten Start sind WooCommerce und Candy Corner aktiv, die WooCommerce-S
 - **Design → Candy Corner Einrichtung:** optional vier Candy-Produkte als Entwürfe anlegen. Die Produkte starten mit Bestand 0 und werden nicht automatisch verkauft.
 - **Design → Candy Corner Einrichtung:** Die 32 voreingestellten Essener PLZ prüfen; bei Bedarf einzelne Gebiete entfernen. Vollständige Abholadresse ergänzen, sobald sie vorliegt. Vorgaben: Essen-Zentrum, 20 € Mindestbestellwert (auch Abholung), 5 € Lieferkosten als Endpreis. Sobald echte Artikel und Betreiberangaben vorhanden sind, den Lieferservice aktivieren. Lieferung kann ohne Abholadresse starten; Abholung bleibt dann gesperrt. Das Theme akzeptiert ausschließlich die lokale Lieferung oder ausdrücklich gewählte Abholung; vorhandene Versandzonen werden nicht verändert. Die PLZ-Prüfung und die Kasse verwenden dieselben Regeln. Ohne Liefer-PLZ keine Lieferung, ohne Abholadresse keine Abholung.
 - **Produkte:** echte Artikel, Bilder, Zutaten, Allergene, Nährwerte, Mengen, Preise und Lagerbestände eintragen.
-- **WooCommerce:** Barzahlung ist eingerichtet und die einzige angebotene Zahlungsart. Umsatzsteuer ist entsprechend der angefragten Kleinunternehmerregelung deaktiviert (§ 19 UStG); die Berechtigung dafür prüfen, denn ein Kleingewerbe allein genügt nicht. Bestell-E-Mails konfigurieren. Für zuverlässigen E-Mail-Versand einen SMTP-/Mailanbieter anbinden; das Container-Setup enthält keinen Mailserver.
+- **WooCommerce:** Barzahlung ist eingerichtet. Zusätzlich ist das offizielle PayPal-Plugin vorbereitet; nach Anbindung des Geschäftskontos kann PayPal angeboten werden (siehe `docs/PAYPAL.md`). Umsatzsteuer ist entsprechend der angefragten Kleinunternehmerregelung deaktiviert (§ 19 UStG); die Berechtigung dafür prüfen, denn ein Kleingewerbe allein genügt nicht. Bestell-E-Mails konfigurieren. Für zuverlässigen E-Mail-Versand einen SMTP-/Mailanbieter anbinden; das Container-Setup enthält keinen Mailserver.
 - Service-Menü und Betreibertexte ergänzen, danach eine vollständige Testbestellung mit Barzahlung durchführen. Beim Test keine echte Kundenadresse verwenden.
 
 Die KI-Beispielbilder werden mitgeliefert. Sie müssen für reale Verkäufe zu den angebotenen Produkten passen. Produktdetails, Konto und Warenkorb nutzen die nativen WooCommerce-Seiten; die lokale Merkliste der React-Vorschau gehört nicht zum Theme.

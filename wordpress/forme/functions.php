@@ -15,9 +15,9 @@ function forme_setup() {
 }
 add_action( 'after_setup_theme', 'forme_setup' );
 function forme_assets() {
- wp_enqueue_style( 'forme', get_stylesheet_uri(), array(), '2.1.0' );
- wp_enqueue_style( 'forme-store', get_template_directory_uri() . '/assets/store.css', array( 'forme' ), '2.1.0' );
- wp_enqueue_script( 'forme-store', get_template_directory_uri() . '/assets/store.js', array(), '2.1.0', true );
+ wp_enqueue_style( 'forme', get_stylesheet_uri(), array(), '2.2.0' );
+ wp_enqueue_style( 'forme-store', get_template_directory_uri() . '/assets/store.css', array( 'forme' ), '2.2.0' );
+ wp_enqueue_script( 'forme-store', get_template_directory_uri() . '/assets/store.js', array(), '2.2.0', true );
  if ( class_exists( 'WC_AJAX' ) ) { wp_localize_script( 'forme-store', 'candyDelivery', array( 'url' => WC_AJAX::get_endpoint( 'candy_delivery' ), 'nonce' => wp_create_nonce( 'candy_delivery' ) ) ); }
 }
 add_action( 'wp_enqueue_scripts', 'forme_assets' );
@@ -51,7 +51,7 @@ add_filter( 'loop_shop_columns', function() { return 4; } );
 function forme_cart_link() {
  $count = function_exists( 'WC' ) && WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
  $url = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : forme_shop_url();
- return '<a class="icon-button bag-button forme-cart-link" href="' . esc_url( $url ) . '" aria-label="' . esc_attr( sprintf( __( 'Warenkorb: %d Artikel', 'forme' ), $count ) ) . '">' . forme_icon( 'bag' ) . '<span class="desktop-label">' . esc_html__( 'Warenkorb', 'forme' ) . '</span><b>' . absint( $count ) . '</b></a>';
+ return '<a class="icon-button bag-button forme-cart-link" href="' . esc_url( $url ) . '" aria-label="' . esc_attr( sprintf( __( 'Warenkorb: %d Artikel', 'forme' ), $count ) ) . '">' . forme_icon( 'bag' ) . '<span class="bag-label desktop-label">' . esc_html__( 'Warenkorb', 'forme' ) . '</span><b class="bag-count">' . absint( $count ) . '</b></a>';
 }
 add_filter( 'woocommerce_add_to_cart_fragments', function( $fragments ) { $fragments['a.forme-cart-link'] = forme_cart_link(); return $fragments; } );
 add_filter( 'woocommerce_product_get_image', function( $image, $product, $size, $attr, $placeholder ) {
@@ -96,3 +96,6 @@ require get_template_directory() . '/inc-setup.php';
 
 require get_template_directory() . '/inc-business.php';
 require get_template_directory() . '/inc-age-notice.php';
+
+require get_template_directory() . '/inc-legal.php';
+require get_template_directory() . '/inc-withdrawal.php';

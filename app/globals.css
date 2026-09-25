@@ -164,7 +164,7 @@ svg {
   font-size: 14px;
   font-weight: 700;
 }
-.bag-button > span {
+.bag-button > .bag-count {
   display: grid;
   place-items: center;
   background: var(--pink);
@@ -1005,6 +1005,12 @@ h1 em {
   width: 100%;
 }
 .mood-art img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: contain;
   mix-blend-mode: screen;
 }
 .faq-section {
@@ -1892,3 +1898,6 @@ body {
   color: #101019;
   font-weight: 900;
 }
+
+/* Grid children must shrink below the intrinsic logo width on small screens. */
+.mood-banner > * { min-width: 0; }

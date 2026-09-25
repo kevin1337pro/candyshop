@@ -7,3 +7,5 @@
 !docker/
 !docker/setup-wordpress.sh
 !docker/wordpress.ini
+
+!docker/sync-site-url.php
