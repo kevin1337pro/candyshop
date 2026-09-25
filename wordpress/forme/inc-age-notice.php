@@ -53,6 +53,6 @@ add_action( 'wp_footer', function() {
 } );
 add_action( 'wp_enqueue_scripts', function() {
  if ( ! class_exists( 'WC_AJAX' ) ) { return; }
- wp_enqueue_script( 'candy-age-notice', get_template_directory_uri() . '/assets/age-notice.js', array(), '2.2.0', true );
+ wp_enqueue_script( 'candy-age-notice', get_template_directory_uri() . '/assets/age-notice.js', array(), '2.3.0', true );
  wp_localize_script( 'candy-age-notice', 'candyAge', array( 'url' => WC_AJAX::get_endpoint( 'candy_age_confirm' ), 'nonce' => wp_create_nonce( 'candy_age_confirm' ), 'confirmed' => candy_age_confirmed() ) );
 }, 20 );

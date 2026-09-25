@@ -1,5 +1,5 @@
 'use client';
-import Image from 'next/image';
+/* oxlint-disable next/no-img-element -- Responsive WebP files are pre-optimized at build time; no runtime image proxy is needed. */
 import {
   ArrowUpRight,
   MapPin,
@@ -18,6 +18,7 @@ import {
   Check,
   Heart,
   Package,
+  Menu,
 } from 'lucide-react';
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -85,21 +86,25 @@ function ProductImage({
 }) {
   return (
     <div className={`product-image ${className}`}>
-      <Image
-        unoptimized
-        src="/images/candy-products.png"
+      <img
+        src={`/images/${product.image}.webp`}
+        srcSet={`/images/${product.image}-240.webp 240w, /images/${product.image}-480.webp 480w, /images/${product.image}.webp 627w`}
+        sizes={
+          className.includes('detail')
+            ? '(min-width: 768px) 440px, calc(100vw - 48px)'
+            : '(min-width: 1024px) 300px, (min-width: 768px) 30vw, 46vw'
+        }
         alt={`${product.name} – KI-Beispielbild`}
-        width={1254}
-        height={1254}
-        style={{
-          left: product.position.startsWith('100') ? '-100%' : '0',
-          top: product.position.endsWith('100%') ? '-100%' : '0',
-        }}
+        width={627}
+        height={627}
+        loading="lazy"
+        decoding="async"
       />
     </div>
   );
 }
 export default function Home() {
+  const [menuOpen, setMenuOpen] = useState(false);
   const cart = useSyncExternalStore(subscribe, getCart, () => emptyCart);
   const [mode, setMode] = useState('delivery');
   const [postcode, setPostcode] = useState('');
@@ -219,18 +224,30 @@ export default function Home() {
       </div>
       <header className="site-header wrap">
         <a href="#top" className="brand" aria-label="Candy Corner – Startseite">
-          <Image
-            unoptimized
-            src="/images/candy-corner-logo.png"
+          <img
+            src="/images/candy-corner-logo.webp"
+            srcSet="/images/candy-corner-logo-192.webp 192w, /images/candy-corner-logo-384.webp 384w, /images/candy-corner-logo.webp 768w"
+            sizes="(min-width: 768px) 126px, 96px"
+            decoding="async"
             alt="Candy Corner"
-            width="1536"
-            height="1024"
+            width="768"
+            height="512"
           />
         </a>
-        <nav aria-label="Hauptnavigation">
-          <a href="#sortiment">Unser Sortiment</a>
-          <a href="#so-gehts">So funktioniert’s</a>
-          <a href="#fragen">Gut zu wissen</a>
+        <nav
+          id="primary-nav"
+          className={menuOpen ? 'menu-is-open' : ''}
+          aria-label="Hauptnavigation"
+        >
+          <a href="#sortiment" onClick={() => setMenuOpen(false)}>
+            Unser Sortiment
+          </a>
+          <a href="#so-gehts" onClick={() => setMenuOpen(false)}>
+            So funktioniert’s
+          </a>
+          <a href="#fragen" onClick={() => setMenuOpen(false)}>
+            Gut zu wissen
+          </a>
         </nav>
         <div className="header-actions">
           <button
@@ -248,10 +265,23 @@ export default function Home() {
             <Heart size={21} />
             {favorites.length > 0 && <span>{favorites.length}</span>}
           </button>
-          <button className="bag-button" onClick={() => setCartOpen(true)}>
+          <button
+            className="bag-button"
+            aria-label={`Warenkorb: ${count} Artikel`}
+            onClick={() => setCartOpen(true)}
+          >
             <ShoppingBag size={19} />
-            <span className="bag-label">Warenkorb</span>
+            <span className="bag-label desktop-label">Warenkorb</span>
             <b className="bag-count">{count}</b>
+          </button>
+          <button
+            className="mobile-menu"
+            aria-label={menuOpen ? 'Menü schließen' : 'Menü öffnen'}
+            aria-controls="primary-nav"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </header>
@@ -264,8 +294,7 @@ export default function Home() {
           <div className="order-intro">
             <span className="eyebrow pink">LET’S GET SWEET</span>
             <h2 id="order-heading">
-              Wie kommt dein
-              <br />
+              Wie kommt dein <br />
               Glück zu dir?
             </h2>
             <p>Persönlich geliefert. Einfach bezahlt.</p>
@@ -365,7 +394,8 @@ export default function Home() {
             </h1>
             <p>
               Süß, sauer, crunchy. Entdecke deinen nächsten Lieblingssnack – für
-              die Couch, die Crew und einfach so.
+              die Couch, die Crew und einfach so. Süßigkeiten, Snacks und Drinks
+              persönlich geliefert in Essen oder zur Abholung.
             </p>
             <a className="button primary hero-cta" href="#sortiment">
               Entdecke deine Lieblinge <ArrowUpRight size={21} />
@@ -376,9 +406,12 @@ export default function Home() {
             </div>
           </div>
           <div className="hero-visual">
-            <Image
-              unoptimized
-              src="/images/candy-hero.png"
+            <img
+              src="/images/candy-hero.webp"
+              srcSet="/images/candy-hero-480.webp 480w, /images/candy-hero-768.webp 768w, /images/candy-hero-1152.webp 1152w, /images/candy-hero.webp 1536w"
+              sizes="(min-width: 1024px) 700px, (min-width: 768px) 55vw, calc(100vw - 32px)"
+              loading="eager"
+              decoding="async"
               alt="Bunte Fruchtgummis und saure Bänder in einer schwarzen Candy-Box"
               width="1536"
               height="1024"
@@ -564,9 +597,11 @@ export default function Home() {
             </button>
           </div>
           <div className="mood-art">
-            <Image
-              unoptimized
-              src="/images/candy-corner-logo.png"
+            <img
+              src="/images/candy-corner-logo.webp"
+              srcSet="/images/candy-corner-logo-192.webp 192w, /images/candy-corner-logo-384.webp 384w, /images/candy-corner-logo.webp 768w"
+              sizes="(min-width: 768px) 420px, 260px"
+              decoding="async"
               alt="Candy Corner"
               width="1536"
               height="1024"
@@ -618,6 +653,37 @@ export default function Home() {
               </div>
             </li>
           </ol>
+        </section>
+        <section
+          className="local-info wrap"
+          id="candy-in-essen"
+          aria-labelledby="local-heading"
+        >
+          <span className="eyebrow cyan">DEIN CANDY-SPOT VOR ORT</span>
+          <h2 id="local-heading">Süßigkeiten liefern lassen in Essen.</h2>
+          <dl>
+            <div>
+              <dt>Persönliche Lieferung</dt>
+              <dd>
+                Wir bringen Süßigkeiten, Snacks und Drinks mit dem Auto zu dir
+                in Essen. Kein Paketversand. Prüfe vor deiner Bestellung{' '}
+                <a href="#bestellen">deine Postleitzahl</a>.
+              </dd>
+            </div>
+            <div>
+              <dt>Bestellwert & Lieferkosten</dt>
+              <dd>
+                Ab {money(shopConfig.minimum)} Warenwert. Lieferung:{' '}
+                {money(shopConfig.deliveryFee)}. Abholung ohne Lieferkosten.
+              </dd>
+            </div>
+            <div>
+              <dt>Abholen bei Candy Corner</dt>
+              <dd>
+                Essen-Zentrum – die genaue Abholadresse folgt zum Shopstart.
+              </dd>
+            </div>
+          </dl>
         </section>
         <section className="faq-section wrap" id="fragen">
           <div>
@@ -683,9 +749,11 @@ export default function Home() {
         <div className="footer-top">
           <div>
             <a className="brand" href="#top">
-              <Image
-                unoptimized
-                src="/images/candy-corner-logo.png"
+              <img
+                src="/images/candy-corner-logo.webp"
+                srcSet="/images/candy-corner-logo-192.webp 192w, /images/candy-corner-logo-384.webp 384w, /images/candy-corner-logo.webp 768w"
+                sizes="(min-width: 768px) 126px, 96px"
+                decoding="async"
                 alt="Candy Corner – Startseite"
                 width="1536"
                 height="1024"

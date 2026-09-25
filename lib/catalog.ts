@@ -4,7 +4,7 @@ export type Product = {
   category: string;
   price: number;
   unit: string;
-  position: string;
+  image: string;
   tag: string;
   description: string;
   ingredients: string;
@@ -17,7 +17,7 @@ export const products: Product[] = [
     category: 'Süßigkeiten',
     price: 490,
     unit: '200 g',
-    position: '0% 0%',
+    image: 'rainbow-bears',
     tag: 'FRUCHTIG',
     description:
       'Kleine Bären. Große Candy-Laune. Ein bunter Fruchtgummi-Mix für deine süße Auszeit.',
@@ -30,7 +30,7 @@ export const products: Product[] = [
     category: 'Süßigkeiten',
     price: 390,
     unit: '150 g',
-    position: '100% 0%',
+    image: 'sour-rainbow-belts',
     tag: 'SOUR POWER',
     description:
       'Bunt, weich und extra sauer gedacht: Regenbogenbänder für alle, die es nicht nur süß mögen.',
@@ -43,7 +43,7 @@ export const products: Product[] = [
     category: 'Snacks',
     price: 350,
     unit: '1 Stück',
-    position: '0% 100%',
+    image: 'double-choco-cookie',
     tag: 'CHOCO LOVE',
     description:
       'Dein kleiner Schokoladenmoment. Ein dunkler Cookie mit großen Schokostücken – perfekt für die Snackpause.',
@@ -56,7 +56,7 @@ export const products: Product[] = [
     category: 'Drinks',
     price: 450,
     unit: '400 ml',
-    position: '100% 100%',
+    image: 'blue-raspberry',
     tag: 'STAY COOL',
     description:
       'Eiskalt, knallig blau und voller Summer-Vibes. Ein fruchtiger Drink als Begleitung zu deinem Candy-Mix.',

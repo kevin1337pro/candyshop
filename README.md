@@ -5,7 +5,7 @@ Neugestaltung auf Basis des bereitgestellten Logos: Schwarz, Neonpink und Cyan. 
 ## Zwei passende Ausgaben
 
 - **`app/`**: interaktive Sites-/React-Designvorschau. Suche, Filter, Sortierung, Merkliste für die Sitzung, Produktdetails und lokaler Warenkorb. Beispielprodukte/-preise, keine Bestell- oder Zahlungsabwicklung und keine Live-WordPress-Verbindung.
-- **`wordpress/forme/`**: natives WordPress-Theme **Candy Corner 2.2** mit WooCommerce. Echte Produktverwaltung, Warenkorb, Konto, Kasse, Preise/Bestände und Bar-/PayPal-Bestellungen laufen über WooCommerce. Der Ordnername `forme` bleibt für kompatible Updates erhalten.
+- **`wordpress/forme/`**: natives WordPress-Theme **Candy Corner 2.3** mit WooCommerce. Echte Produktverwaltung, Warenkorb, Konto, Kasse, Preise/Bestände und Bar-/PayPal-Bestellungen laufen über WooCommerce. Der Ordnername `forme` bleibt für kompatible Updates erhalten.
 
 ## Lieferung und Abholung
 
@@ -67,3 +67,9 @@ Mobile Logo-Einpassung und Warenkorb korrigiert, offizielle PayPal-Anbindung vor
 - **[Rechtstexte und noch benötigte Angaben](docs/RECHTLICHES.md)** — Bearbeitung in WordPress unter Design → Rechtstexte & PayPal.
 
 Der Produktionsshop liegt auf eurem eigenen Server. Die Sites-Adresse bleibt eine öffentliche Designvorschau ohne Bestell- oder Zahlungsabwicklung.
+
+## WebP, Mobile First und Suchmaschinen
+
+Theme 2.3.0 enthält responsive WebP-Bilder, ein gemeinsames Layout mit Handy als Ausgangspunkt und eine native SEO-Grundausstattung. Die größten WebP-Dateien benötigen zusammen 92,7 % weniger Bytes als die ursprünglichen PNGs. Die PLZ-Prüfung bleibt auf Mobilgeräten früh erreichbar; größere Touchflächen, ein mobiles Menü und passende Bildabmessungen sind hinterlegt.
+
+**[SEO/GEO, KI-Suche und Einrichtung](docs/SEO-GEO.md)** erklärt Metadaten, Sitemap, Unternehmensdaten, Domainwechsel und die noch nötige Verifizierung. Kontakt/Öffnungszeiten unter **Design → Auffindbarkeit** pflegen. Echte Adresse und Produktdaten sind weiterhin zu ergänzen. Das Update aktiviert keine zuvor gesperrte Suchmaschinen-Indexierung. **[Bilddateien und Größen](docs/ASSETS.md)**.

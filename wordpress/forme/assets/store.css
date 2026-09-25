@@ -851,8 +851,7 @@ h1 em {
 }
 .product-image {
   aspect-ratio: 1;
-  background-image: url('products.png');
-  background-size: 200% 200%;
+  background-image: none;
   background-repeat: no-repeat;
 }
 .product-open .product-image {
@@ -1874,7 +1873,6 @@ progress::-webkit-progress-value {
 .woocommerce ul.products li.product .product-image {
   border-radius: 14px;
   margin-bottom: 17px;
-  background-size: 200% 200%;
 }
 .woocommerce ul.products li.product .woocommerce-loop-product__title {
   font-size: 17px;

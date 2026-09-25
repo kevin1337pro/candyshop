@@ -871,8 +871,7 @@ h1 em {
 }
 .product-image {
   aspect-ratio: 1;
-  background-image: url('/images/candy-products.png');
-  background-size: 200% 200%;
+  background-image: none;
   background-repeat: no-repeat;
 }
 .product-open .product-image {
@@ -1707,7 +1706,7 @@ progress::-webkit-progress-value {
   }
 }
 
-/* Semantic cropped image for the product atlas. */
+/* Individual product files can be discovered and lazy-loaded independently. */
 .product-image {
   position: relative;
   overflow: hidden;
@@ -1715,10 +1714,11 @@ progress::-webkit-progress-value {
 }
 .product-image > img {
   position: absolute;
-  width: 200%;
-  height: 200%;
-  max-width: none;
-  object-fit: fill;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: cover;
 }
 .category-tabs {
   border: 0;

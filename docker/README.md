@@ -4,7 +4,7 @@ Dieses Setup startet den **nativen WordPress-/WooCommerce-Shop** mit dem Candy-C
 
 Enthalten sind WordPress mit Apache/PHP, WooCommerce, MariaDB, eine einmalige Einrichtung und ein optionaler Caddy-Reverse-Proxy für HTTPS. Der WordPress-Admin wird aus der lokalen `.env` angelegt. Die Einrichtung lässt bestehende Benutzer und Shop-Einstellungen bei späteren Starts unverändert.
 
-> **Bestehender Server auf vape.miami-enterprise.com:** Zuerst [Update-Anleitung 2.2](UPDATE-2026-09.md) verwenden. PayPal und Rechtstexte sind vorbereitet, Kontoverbindung und Betreiberangaben fehlen noch.
+> **Bestehender Server auf vape.miami-enterprise.com:** Zuerst [Update-Anleitung 2.3](UPDATE-2026-09.md) verwenden. PayPal und Rechtstexte sind vorbereitet, Kontoverbindung und Betreiberangaben fehlen noch.
 
 ## Voraussetzungen
 

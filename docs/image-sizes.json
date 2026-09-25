@@ -1,0 +1,102 @@
+{
+  "originalBytes": 6229998,
+  "largestWebpBytes": 457406,
+  "reductionPercent": 92.7,
+  "files": [
+    {
+      "file": "candy-corner-logo-192.webp",
+      "width": 192,
+      "bytes": 12336
+    },
+    {
+      "file": "candy-corner-logo-384.webp",
+      "width": 384,
+      "bytes": 30144
+    },
+    {
+      "file": "candy-corner-logo.webp",
+      "width": 768,
+      "bytes": 76532
+    },
+    {
+      "file": "candy-hero-480.webp",
+      "width": 480,
+      "bytes": 30442
+    },
+    {
+      "file": "candy-hero-768.webp",
+      "width": 768,
+      "bytes": 68450
+    },
+    {
+      "file": "candy-hero-1152.webp",
+      "width": 1152,
+      "bytes": 134804
+    },
+    {
+      "file": "candy-hero.webp",
+      "width": 1536,
+      "bytes": 205774
+    },
+    {
+      "file": "rainbow-bears-240.webp",
+      "width": 240,
+      "bytes": 8362
+    },
+    {
+      "file": "rainbow-bears-480.webp",
+      "width": 480,
+      "bytes": 21882
+    },
+    {
+      "file": "rainbow-bears.webp",
+      "width": 627,
+      "bytes": 30440
+    },
+    {
+      "file": "sour-rainbow-belts-240.webp",
+      "width": 240,
+      "bytes": 11946
+    },
+    {
+      "file": "sour-rainbow-belts-480.webp",
+      "width": 480,
+      "bytes": 42176
+    },
+    {
+      "file": "sour-rainbow-belts.webp",
+      "width": 627,
+      "bytes": 64546
+    },
+    {
+      "file": "double-choco-cookie-240.webp",
+      "width": 240,
+      "bytes": 11560
+    },
+    {
+      "file": "double-choco-cookie-480.webp",
+      "width": 480,
+      "bytes": 39124
+    },
+    {
+      "file": "double-choco-cookie.webp",
+      "width": 627,
+      "bytes": 58630
+    },
+    {
+      "file": "blue-raspberry-240.webp",
+      "width": 240,
+      "bytes": 3882
+    },
+    {
+      "file": "blue-raspberry-480.webp",
+      "width": 480,
+      "bytes": 13852
+    },
+    {
+      "file": "blue-raspberry.webp",
+      "width": 627,
+      "bytes": 21484
+    }
+  ]
+}

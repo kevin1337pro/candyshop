@@ -1,5 +1,6 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) { exit; }
+require get_template_directory() . '/inc-images.php';
 function forme_setup() {
  load_theme_textdomain( 'forme', get_template_directory() . '/languages' );
  add_theme_support( 'title-tag' );
@@ -15,9 +16,10 @@ function forme_setup() {
 }
 add_action( 'after_setup_theme', 'forme_setup' );
 function forme_assets() {
- wp_enqueue_style( 'forme', get_stylesheet_uri(), array(), '2.2.0' );
- wp_enqueue_style( 'forme-store', get_template_directory_uri() . '/assets/store.css', array( 'forme' ), '2.2.0' );
- wp_enqueue_script( 'forme-store', get_template_directory_uri() . '/assets/store.js', array(), '2.2.0', true );
+ wp_enqueue_style( 'forme', get_stylesheet_uri(), array(), '2.3.0' );
+ wp_enqueue_style( 'forme-store', get_template_directory_uri() . '/assets/store.css', array( 'forme' ), '2.3.0' );
+ wp_enqueue_style( 'candy-mobile', get_template_directory_uri() . '/assets/mobile.css', array( 'forme-store' ), '2.3.0' );
+ wp_enqueue_script( 'forme-store', get_template_directory_uri() . '/assets/store.js', array(), '2.3.0', true );
  if ( class_exists( 'WC_AJAX' ) ) { wp_localize_script( 'forme-store', 'candyDelivery', array( 'url' => WC_AJAX::get_endpoint( 'candy_delivery' ), 'nonce' => wp_create_nonce( 'candy_delivery' ) ) ); }
 }
 add_action( 'wp_enqueue_scripts', 'forme_assets' );
@@ -33,7 +35,7 @@ function forme_icon( $name, $size = 20 ) {
  return '<svg width="' . absint( $size ) . '" height="' . absint( $size ) . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">' . $path . '</svg>';
 }
 function forme_logo() {
- if ( has_custom_logo() ) { the_custom_logo(); } else { echo '<a class="brand" href="' . esc_url( home_url( '/' ) ) . '" aria-label="Candy Corner – Startseite"><img src="' . esc_url( get_template_directory_uri() . '/assets/logo.png' ) . '" alt="Candy Corner" width="1536" height="1024"></a>'; }
+ if ( has_custom_logo() ) { the_custom_logo(); } else { echo '<a class="brand" href="' . esc_url( home_url( '/' ) ) . '" aria-label="Candy Corner – Startseite">' . candy_asset_image( 'candy-corner-logo', 'Candy Corner', '(min-width: 768px) 126px, 96px', array( 'loading' => 'eager' ) ) . '</a>'; }
 }
 function forme_fallback_menu() {
  echo '<ul class="nav-menu">';
@@ -59,7 +61,8 @@ add_filter( 'woocommerce_product_get_image', function( $image, $product, $size, 
  if ( ! $position && $product->get_parent_id() ) { $parent = wc_get_product( $product->get_parent_id() ); $position = $parent ? $parent->get_meta( '_candy_demo_position' ) : ''; }
  $allowed = array( '0% 0%', '100% 0%', '0% 100%', '100% 100%' );
  if ( ! $product->get_image_id() && in_array( $position, $allowed, true ) ) {
-  return '<div role="img" aria-label="' . esc_attr( $product->get_name() ) . ' – KI-Beispielbild" class="product-image" style="background-image:url(' . esc_url( get_template_directory_uri() . '/assets/products.png' ) . ');background-position:' . esc_attr( $position ) . '"></div>';
+  $names = array( '0% 0%' => 'rainbow-bears', '100% 0%' => 'sour-rainbow-belts', '0% 100%' => 'double-choco-cookie', '100% 100%' => 'blue-raspberry' );
+  return candy_asset_image( $names[$position], $product->get_name() . ' – KI-Beispielbild', '(min-width: 1024px) 300px, (min-width: 768px) 30vw, 46vw', array( 'class' => 'candy-product-image' ) );
  }
  return $image;
 }, 10, 5 );
@@ -76,7 +79,7 @@ function forme_customize_register( $customizer ) {
   'announcement' => array( 'Ankündigung', 'DEIN CANDY-SPOT IN ESSEN' ),
   'hero_eyebrow' => array( 'Kampagnenzeile', 'GOOD MOOD. GREAT CANDY.' ),
   'hero_title' => array( 'Hauptüberschrift', "Dein Leben.\nEin bisschen süßer." ),
-  'hero_copy' => array( 'Einleitung', 'Süß, sauer, crunchy. Entdecke deinen nächsten Lieblingssnack – für die Couch, die Crew und einfach so.' ),
+  'hero_copy' => array( 'Einleitung', 'Süßigkeiten, Snacks und Drinks – persönlich geliefert in Essen oder zur Abholung. Entdecke deinen nächsten Lieblingssnack.' ),
   'hero_cta' => array( 'Button-Text', 'Entdecke deine Lieblinge' ),
   'editorial_title' => array( 'Banner-Überschrift', "Couch. Crew.\nCandy Corner." ),
   'editorial_copy' => array( 'Banner-Text', 'Lieblingsserie an. Lieblingssnacks dazu. Stell dir deinen ganz eigenen Sweet Mix zusammen.' ),
@@ -99,3 +102,5 @@ require get_template_directory() . '/inc-age-notice.php';
 
 require get_template_directory() . '/inc-legal.php';
 require get_template_directory() . '/inc-withdrawal.php';
+
+require get_template_directory() . '/inc-seo.php';

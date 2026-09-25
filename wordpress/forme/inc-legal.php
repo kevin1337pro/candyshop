@@ -76,6 +76,6 @@ add_action( 'woocommerce_email_after_order_table', function( $order, $admin, $pl
 add_filter( 'woocommerce_order_button_text', function() { return 'Zahlungspflichtig bestellen'; } );
 add_action( 'wp_enqueue_scripts', function() {
  if ( function_exists( 'is_checkout' ) && is_checkout() && wp_script_is( 'wc-blocks-checkout', 'registered' ) ) {
-  wp_enqueue_script( 'candy-checkout', get_template_directory_uri() . '/assets/checkout.js', array( 'wc-blocks-checkout' ), '2.2.0', true );
+  wp_enqueue_script( 'candy-checkout', get_template_directory_uri() . '/assets/checkout.js', array( 'wc-blocks-checkout' ), '2.3.0', true );
  }
 }, 30 );

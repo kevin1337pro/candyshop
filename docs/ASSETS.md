@@ -1,7 +1,17 @@
-# Candy Corner Bildnachweise
+# Candy Corner Bildnachweise und WebP
 
-- `public/images/candy-corner-logo.png` / `wordpress/forme/assets/logo.png`: vom Auftraggeber bereitgestelltes Candy-Corner-Logo, unverändert.
-- `public/images/candy-hero.png` / `wordpress/forme/assets/hero.png`: original mit dem integrierten image_gen-Werkzeug erzeugtes Candy-Kampagnenbild, 1536 × 1024 Pixel.
-- `public/images/candy-products.png` / `wordpress/forme/assets/products.png`: original mit image_gen erzeugter 2×2-Produktfotobogen, 1254 × 1254 Pixel. Reihenfolge: Fruchtgummibären, saure Regenbogenbänder, Schoko-Cookie, blauer Drink. Jedes Motiv wird über die Hintergrundposition dargestellt.
+- `candy-corner-logo.webp`: bereitgestelltes Candy-Corner-Logo, inhaltlich unverändert, als WebP exportiert. Breiten 192, 384 und 768 Pixel.
+- `candy-hero.webp`: mit image_gen erzeugtes Candy-Kampagnenbild. Breiten 480, 768, 1152 und 1536 Pixel, Seitenverhältnis 3:2.
+- `rainbow-bears.webp`, `sour-rainbow-belts.webp`, `double-choco-cookie.webp`, `blue-raspberry.webp`: vier Motive aus dem ursprünglichen 2×2-Produktfotobogen, einzeln ausgeschnitten. Quadratische Varianten mit 240, 480 und 627 Pixeln. Echte Bild-Tags statt CSS-Hintergrundatlas.
 
-Exakte Prompts: [CANDY-IMAGE-PROMPTS.md](CANDY-IMAGE-PROMPTS.md). Je Motiv eine Generierung, keine Varianten. Die Bilder stellen Produktkonzepte dar; vor tatsächlichem Verkauf durch zutreffende Produktabbildungen ersetzen. Es werden keine geschützten Drittmarken oder Fotos der Referenzseite eingesetzt.
+Auslieferung in `public/images/` (Vorschau) und `wordpress/forme/assets/` (WordPress). Die unveränderten PNG-Originale liegen einmalig in `assets-source/`, außerhalb der öffentlichen Dateien und des Docker-Build-Kontexts. Keine externen Bilddienste erforderlich.
+
+Exakte ursprüngliche Prompts: [CANDY-IMAGE-PROMPTS.md](CANDY-IMAGE-PROMPTS.md). Die Produktbilder stellen KI-Produktkonzepte dar und müssen vor tatsächlichem Verkauf durch zutreffende Produktabbildungen ersetzt werden. Keine Drittmarken oder Fotos der Referenzseite übernommen.
+
+## Gemessene Dateigrößen
+
+Die drei PNG-Originale zusammen: **6.229.998 Bytes**. Logo, Kampagnenbild und alle vier einzelnen Produktmotive als jeweils größte ausgelieferte WebP-Datei zusammen: **457.406 Bytes**, also **92,7 % weniger Bilddaten**. Kleinere Geräte können über `srcset` kleinere Dateien wählen. Die zusätzliche Summe aller Auflösungen auf dem Server ist nicht mit den übertragenen Dateien einer einzelnen Seitenansicht gleichzusetzen. Die Zahlen beschreiben Bilddateien, keine gemessene Ladezeit.
+
+Einzelgrößen: [image-sizes.json](image-sizes.json). Reproduzierbarer Export: `scripts/optimize-images.mjs`, Sharp 0.35.x. Bei lokal installiertem Sharp: `node scripts/optimize-images.mjs`; alternativ `CANDY_SHARP_MODULE` auf einen vorhandenen Sharp-Modulpfad setzen. Sharp wird nicht im Produktionscontainer benötigt.
+
+Das Theme erzeugt für neue JPEG-/PNG-Uploads WebP-Untergrößen, wenn der Bildeditor des Servers WebP unterstützt. Originaluploads bleiben erhalten. Schon vorhandene eigene Medien werden nicht rückwirkend konvertiert; diese bei Bedarf sichern und neu optimieren. Keine GIF-Animationen oder fremden URLs pauschal umschreiben. [WordPress-Filter](https://developer.wordpress.org/reference/hooks/image_editor_output_format/).

@@ -6,6 +6,7 @@
     toggle.addEventListener('click', function () {
       var open = toggle.getAttribute('aria-expanded') === 'true';
       toggle.setAttribute('aria-expanded', String(!open));
+      toggle.setAttribute('aria-label', open ? 'Menü öffnen' : 'Menü schließen');
       nav.classList.toggle('menu-is-open', !open);
     });
     document.addEventListener('keydown', function (e) {
@@ -14,6 +15,7 @@
         toggle.getAttribute('aria-expanded') === 'true'
       ) {
         toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Menü öffnen');
         nav.classList.remove('menu-is-open');
         toggle.focus();
       }
